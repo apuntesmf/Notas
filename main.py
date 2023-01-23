@@ -9,7 +9,7 @@ ven = tk.Tk()
 ven.title("pacientes")
 
 try:
-    conexion = sqlite3.connect("bd/pacientes")
+    conexion = sqlite3.connect("Bd/pacientes")
     cursor = conexion.cursor()
     cursor.execute("CREATE TABLE paciente (Nec VARCHAR(500), Paterno VARCHAR(50), Materno VARCHAR(50), Nombres VARCHAR(50), Edad INTEGER, Nacimiento VARCHAR(50))")
 except Exception as ex:
@@ -159,15 +159,20 @@ def tablas ():
 
 #barra de menu
 
-#menu_bar = Menu(ven)
-#ven.config(menu=menu_bar)
+menu_bar = Menu(ven)
+ven.config(menu=menu_bar)
 
-#file_menu = Menu(menu_bar)
-#file_menu.add_command(label="Buscar pacientes")
+file_menu = Menu(menu_bar, tearoff=0)
+file_menu.add_command(label="Buscar pacientes")
 
-#file_menu = Menu(menu_bar)
-#file_menu.add_cascade(label="Archivo", menu=file_menu)
+forms = Menu(menu_bar, tearoff=0)
+forms.add_command(label="lumbalgia")
 
+menu_bar.add_cascade(label="Archivo", menu=file_menu)
+menu_bar.add_cascade(label="Formatos", menu=forms)
+
+
+#tabs
 tabs = ttk.Notebook(ven)
 tab1 = ttk.Frame(tabs)
 tabs.add(tab1, text='Datos personales')
