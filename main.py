@@ -25,6 +25,7 @@ def evo():
     g_check4 = check_quimica.get()
     g_check5 = check_otro.get()
     g_check = check_embarazo.get()
+    g_serieroja = var_hemo.get() + var_eritros.get() + var_hemato.get()+vcm.get() +var_hcm.get() + var_cmhg.get() + var_plaqueta.get() + var_leuco.get() + var_neutro.get() +var_linfo.get() + var_mono.get() + var_eos.get() + var_baso.get() +var_neutro2.get() + var_linfo2.get() + var_mono2.get() + var_eos2.get() + var_baso2.get() 
     g_laboratorio = var_hemato.get()
     g_signos = "Tension arterial: " + var_tension.get() + ", Frecuencia cardiaca: " + var_fr.get() + ", Frecuencia respiratoria: " + var_fr.get() + ", Temperatura: " + var_temp.get() + ", Saturacion: " + var_sat.get()
     g_nombre = var_paterno.get() + " " + var_materno.get() +" "+ var_nombre.get()
@@ -43,7 +44,7 @@ def evo():
         if g_check2 == 1 and g_check3 == 1 and g_check4 == 1 and g_check5 == 1:
             pass
         elif g_check2 == 1 and g_check3 == 0 and g_check4 == 0 and g_check5 == 0:
-            g_nota.insert("end","Nombre:" + g_nombre + "\nFecha de nacimiento: " + var_nacimiento.get() + "\nEdad: " + var_edad.get() +"\n\nAPP: " +g_pp+ "\n\nAPNP: "+g_np+"\n\nPadecimiento actual:"+g_actual+"\n\nSignos vitales: " + g_signos +  ".\n\nExploracion fisica:"+g_ef+ "\n\nLaboratorios: " + g_laboratorio+".\n\nAnalisis:"+var_analisis.get()+ ".\n\nManejo:" +var_manejo.get() )
+            g_nota.insert("end","Nombre:" + g_nombre + "\nFecha de nacimiento: " + var_nacimiento.get() + "\nEdad: " + var_edad.get() +"\n\nAPP: " +g_pp+ "\n\nAPNP: "+g_np+"\n\nPadecimiento actual:"+g_actual+"\n\nSignos vitales: " + g_signos +  ".\n\nExploracion fisica:"+g_ef+ "\n\nLaboratorios: " + g_serieroja+".\n\nAnalisis:"+var_analisis.get()+ ".\n\nManejo:" +var_manejo.get() )
         elif g_check2 == 0 and g_check3 == 0 and g_check4 == 1 and g_check5 == 1:
             pass
         elif g_check2 == 0 and g_check3 == 0 and g_check4 == 0 and g_check5 == 1:
@@ -59,8 +60,8 @@ def gen_nota():
     g_check3 = check_blanca.get()
     g_check4 = check_quimica.get()
     g_check5 = check_otro.get()
-    g_check= check_embarazo.get()
-    g_signos = "Tension arterial: " + var_tension.get() + "Frecuencia cardiaca: " + var_fr.get() + "Frecuencia respiratoria: " + var_fr.get() + "Temperatura: " + var_temp.get() + "Saturacion: " + var_sat.get()
+    g_check = check_embarazo.get()
+    g_signos = "Tension arterial: " + var_tension.get() + "Frecuencia cardiaca: " + var_fr.get() + ",Frecuencia respiratoria: " + var_fr.get() + ",Temperatura: " + var_temp.get() + ",Saturacion: " + var_sat.get()
     g_nombre = var_paterno.get() + " " + var_materno.get() +" "+ var_nombre.get()
     g_direccion = var_ca.get() + ", colonia: "+var_colonia.get() +", numero: " + var_numero.get() +", codigo postal: " + var_postal.get()
     g_pp = var_alergias.get() + var_enfermedades.get() + var_hospitalizacion.get() + var_cirugias.get() + var_transfusiones.get() + var_traumatismos.get()
@@ -86,7 +87,7 @@ def gen_word():
     g_check4 = check_quimica.get()
     g_check5 = check_otro.get()
     g_check= check_embarazo.get()
-    g_signos = "Tension arterial: " + var_tension.get() + "Frecuencia cardiaca: " + var_fr.get() + "Frecuencia respiratoria: " + var_fr.get() + "Temperatura: " + var_temp.get() + "Saturacion: " + var_sat.get()
+    g_signos = "Tension arterial: " + var_tension.get() + ",Frecuencia cardiaca: " + var_fr.get() + ",Frecuencia respiratoria: " + var_fr.get() + ",Temperatura: " + var_temp.get() + ",Saturacion: " + var_sat.get()
     g_nombre = var_paterno.get() + " " + var_materno.get() +" "+ var_nombre.get()
     g_direccion = var_ca.get() + ", colonia: "+var_colonia.get() +", numero: " + var_numero.get() +", codigo postal: " + var_postal.get()
     g_pp = var_alergias.get() + var_enfermedades.get() + var_hospitalizacion.get() + var_cirugias.get() + var_transfusiones.get() + var_traumatismos.get()
@@ -105,7 +106,7 @@ def gen_word():
     documento = aw.Document()
     generador = aw.DocumentBuilder(documento)
     generador.write(word_nota)
-    documento.save("Notas/nota.docx")
+    documento.save("Notas/"+g_nombre+".docx")
 #
 #Realiza limpieza de los campos de texto para realizar nueva nota
 #
@@ -632,7 +633,7 @@ neutro.grid(column=5, row=3)
 
 ttk.Label(frame_laboratorio, text="Linfocitos%").grid(column=0, row=4)
 var_linfo=tk.StringVar()
-linfo = ttk.Entry(frame_laboratorio, width="20", textvariable=var_hemo)
+linfo = ttk.Entry(frame_laboratorio, width="20", textvariable=var_linfo)
 linfo.grid(column=1, row=4)
 
 ttk.Label(frame_laboratorio, text="Monocitos%").grid(column=2, row=4)
@@ -660,132 +661,132 @@ var_linfo2=tk.StringVar()
 linfo2 = ttk.Entry(frame_laboratorio, width="20", textvariable=var_linfo2)
 linfo2.grid(column=5, row=5)
 
-ttk.Label(frame_laboratorio, text="Monocitos#").grid(column=0, row=5)
+ttk.Label(frame_laboratorio, text="Monocitos#").grid(column=0, row=6)
 var_mono2=tk.StringVar()
 mono2 = ttk.Entry(frame_laboratorio, width="20", textvariable=var_mono2)
-mono2.grid(column=1, row=5)
+mono2.grid(column=1, row=6)
 
-ttk.Label(frame_laboratorio, text="Eosinofilos#").grid(column=2, row=5)
+ttk.Label(frame_laboratorio, text="Eosinofilos#").grid(column=2, row=6)
 var_eos2=tk.StringVar()
 eos2 = ttk.Entry(frame_laboratorio, width="20", textvariable=var_eos2)
-eos2.grid(column=3, row=5)
+eos2.grid(column=3, row=6)
 
-ttk.Label(frame_laboratorio, text="Basofilos#").grid(column=4, row=5)
+ttk.Label(frame_laboratorio, text="Basofilos#").grid(column=4, row=6)
 var_baso2=tk.StringVar()
 baso2 = ttk.Entry(frame_laboratorio, width="20", textvariable=var_baso2)
-baso2.grid(column=5, row=5)
+baso2.grid(column=5, row=6)
 
-ttk.Label(frame_laboratorio, text="").grid(column=0, row=6)#separacion para distincion entre quimica y formula roja y blanca
+ttk.Label(frame_laboratorio, text="").grid(column=0, row=7)#separacion para distincion entre quimica y formula roja y blanca
 
-ttk.Label(frame_laboratorio, text="Glucosa").grid(column=0, row=7)
+ttk.Label(frame_laboratorio, text="Glucosa").grid(column=0, row=8)
 var_gluc=tk.StringVar()
 gluc = ttk.Entry(frame_laboratorio, width="20", textvariable=var_gluc)
-gluc.grid(column=1, row=7)
+gluc.grid(column=1, row=8)
 
-ttk.Label(frame_laboratorio, text="urea").grid(column=2, row=7)
+ttk.Label(frame_laboratorio, text="urea").grid(column=2, row=8)
 var_urea=tk.StringVar()
 urea = ttk.Entry(frame_laboratorio, width="20", textvariable=var_urea)
-urea.grid(column=3, row=7)
+urea.grid(column=3, row=8)
 
-ttk.Label(frame_laboratorio, text="Creatinina").grid(column=4, row=7)
+ttk.Label(frame_laboratorio, text="Creatinina").grid(column=4, row=8)
 var_creatinina=tk.StringVar()
 creatinina = ttk.Entry(frame_laboratorio, width="20", textvariable=var_creatinina)
-creatinina.grid(column=5, row=7)
+creatinina.grid(column=5, row=8)
 
-ttk.Label(frame_laboratorio, text="Nitrogeno ureico").grid(column=0, row=8)
+ttk.Label(frame_laboratorio, text="Nitrogeno ureico").grid(column=0, row=9)
 var_nitro=tk.StringVar()
 nitro = ttk.Entry(frame_laboratorio, width="20", textvariable=var_nitro)
-nitro.grid(column=1, row=8)
+nitro.grid(column=1, row=9)
 
-ttk.Label(frame_laboratorio, text="Colesterol").grid(column=2, row=8)
+ttk.Label(frame_laboratorio, text="Colesterol").grid(column=2, row=9)
 var_colesterol=tk.StringVar()
 colesterol = ttk.Entry(frame_laboratorio, width="20", textvariable=var_colesterol)
-colesterol.grid(column=3, row=8)
+colesterol.grid(column=3, row=9)
 
-ttk.Label(frame_laboratorio, text="Colesterol total").grid(column=4, row=8)
+ttk.Label(frame_laboratorio, text="Colesterol total").grid(column=4, row=9)
 var_ct=tk.StringVar()
 ct = ttk.Entry(frame_laboratorio, width="20", textvariable=var_ct)
-ct.grid(column=5, row=8)
+ct.grid(column=5, row=9)
 
-ttk.Label(frame_laboratorio, text="LDL").grid(column=0, row=9)
+ttk.Label(frame_laboratorio, text="LDL").grid(column=0, row=10)
 var_ldl=tk.StringVar()
 ldl = ttk.Entry(frame_laboratorio, width="20", textvariable=var_ldl)
-ldl.grid(column=1, row=9)
+ldl.grid(column=1, row=10)
 
-ttk.Label(frame_laboratorio, text="HDL").grid(column=2, row=9)
+ttk.Label(frame_laboratorio, text="HDL").grid(column=2, row=10)
 var_hdl=tk.StringVar()
 hdl = ttk.Entry(frame_laboratorio, width="20", textvariable=var_hdl)
-hdl.grid(column=3, row=9)
+hdl.grid(column=3, row=10)
 
-ttk.Label(frame_laboratorio, text="vldl").grid(column=4, row=9)
+ttk.Label(frame_laboratorio, text="vldl").grid(column=4, row=10)
 var_vldl=tk.StringVar()
 vldl = ttk.Entry(frame_laboratorio, width="20", textvariable=var_vldl)
-vldl.grid(column=5, row=9)
+vldl.grid(column=5, row=10)
 
-ttk.Label(frame_laboratorio, text="ALT").grid(column=0, row=10)
+ttk.Label(frame_laboratorio, text="ALT").grid(column=0, row=11)
 var_alt=tk.StringVar()
 alt = ttk.Entry(frame_laboratorio, width="20", textvariable=var_alt)
-alt.grid(column=1, row=10)
+alt.grid(column=1, row=11)
 
-ttk.Label(frame_laboratorio, text="AST").grid(column=0, row=10)
+ttk.Label(frame_laboratorio, text="AST").grid(column=2, row=11)
 var_ast=tk.StringVar()
 ast = ttk.Entry(frame_laboratorio, width="20", textvariable=var_ast)
-ast.grid(column=1, row=10)
+ast.grid(column=3, row=11)
 
-ttk.Label(frame_laboratorio, text="Bilirrubina Total").grid(column=2, row=10)
+ttk.Label(frame_laboratorio, text="Bilirrubina Total").grid(column=4, row=11)
 var_bt=tk.StringVar()
 bt = ttk.Entry(frame_laboratorio, width="20", textvariable=var_bt)
-bt.grid(column=3, row=10)
+bt.grid(column=5, row=11)
 
-ttk.Label(frame_laboratorio, text="Bilirrubine Directa").grid(column=4, row=10)
+ttk.Label(frame_laboratorio, text="Bilirrubine Directa").grid(column=0, row=12)
 var_bd=tk.StringVar()
 bd = ttk.Entry(frame_laboratorio, width="20", textvariable=var_bd)
-bd.grid(column=5, row=10)
+bd.grid(column=1, row=12)
 
-ttk.Label(frame_laboratorio, text="Bilirrubina Indirecta").grid(column=0, row=11)
+ttk.Label(frame_laboratorio, text="Bilirrubina Indirecta").grid(column=2, row=12)
 var_bi=tk.StringVar()
 bi = ttk.Entry(frame_laboratorio, width="20", textvariable=var_bi)
-bi.grid(column=1, row=11)
+bi.grid(column=3, row=12)
 
-ttk.Label(frame_laboratorio, text="Hemoglobina Glucosilada").grid(column=2, row=11)
+ttk.Label(frame_laboratorio, text="Hemoglobina Glucosilada").grid(column=4, row=12)
 var_hglu=tk.StringVar()
 hglu = ttk.Entry(frame_laboratorio, width="20", textvariable=var_hglu)
-hglu.grid(column=3, row=11)
+hglu.grid(column=5, row=12)
 
-ttk.Label(frame_laboratorio, text="Fosfatasa alcalina").grid(column=4, row=11)
+ttk.Label(frame_laboratorio, text="Fosfatasa alcalina").grid(column=0, row=13)
 var_fa=tk.StringVar()
 fa = ttk.Entry(frame_laboratorio, width="20", textvariable=var_fa)
-fa.grid(column=5, row=11)
+fa.grid(column=1, row=13)
 
-ttk.Label(frame_laboratorio, text="GGT").grid(column=0, row=12)
+ttk.Label(frame_laboratorio, text="GGT").grid(column=2, row=13)
 var_ggt=tk.StringVar()
 ggt = ttk.Entry(frame_laboratorio, width="20", textvariable=var_ggt)
-ggt.grid(column=1, row=12)
+ggt.grid(column=3, row=13)
 
-ttk.Label(frame_laboratorio, text="Sodio").grid(column=2, row=12)
+ttk.Label(frame_laboratorio, text="Sodio").grid(column=4, row=13)
 var_na=tk.StringVar()
 na = ttk.Entry(frame_laboratorio, width="20", textvariable=var_na)
-na.grid(column=3, row=12)
+na.grid(column=5, row=13)
 
-ttk.Label(frame_laboratorio, text="Potasio").grid(column=4, row=12)
+ttk.Label(frame_laboratorio, text="Potasio").grid(column=0, row=14)
 var_k=tk.StringVar()
 potasio = ttk.Entry(frame_laboratorio, width="20", textvariable=var_k)
-potasio.grid(column=5, row=12)
+potasio.grid(column=1, row=14)
 
-ttk.Label(frame_laboratorio, text="Calcio").grid(column=0, row=13)
+ttk.Label(frame_laboratorio, text="Calcio").grid(column=2, row=14)
 var_ca=tk.StringVar()
 calcio = ttk.Entry(frame_laboratorio, width="20", textvariable=var_ca)
-calcio.grid(column=1, row=13)
+calcio.grid(column=3, row=14)
 
-ttk.Label(frame_laboratorio, text="Cloro").grid(column=2, row=13)
+ttk.Label(frame_laboratorio, text="Cloro").grid(column=4, row=14)
 var_cl=tk.StringVar()
 cl = ttk.Entry(frame_laboratorio, width="20", textvariable=var_cl)
-cl.grid(column=3, row=13)
+cl.grid(column=5, row=14)
 
-ttk.Label(frame_laboratorio, text="Otros: ").grid(column=0, row=14)
+ttk.Label(frame_laboratorio, text="Otros: ").grid(column=0, row=15)
 var_labotro=tk.StringVar()
 otroslab= ttk.Entry(frame_laboratorio, width="20", textvariable=var_labotro)
-otroslab.grid(column=1, row=14)
+otroslab.grid(column=1, row=15)
 
 
 #
