@@ -1,9 +1,11 @@
 import tkinter as tk
-import sqlite3
+import aspose.words as aw
 from tkinter import VERTICAL, Y, Scrollbar, ttk, scrolledtext, Menu
 from tkinter import messagebox as msg
 from tkinter.scrolledtext import ScrolledText
 from tkinter import Menu
+import sqlite3
+
 
 ven = tk.Tk()
 ven.title("pacientes")
@@ -24,7 +26,7 @@ def evo():
     g_check5 = check_otro.get()
     g_check = check_embarazo.get()
     g_laboratorio = var_hemato.get()
-    g_signos = "Tension arterial: " + var_tension.get() + "Frecuencia cardiaca: " + var_fr.get() + "Frecuencia respiratoria: " + var_fr.get() + "Temperatura: " + var_temp.get() + "Saturacion: " + var_sat.get()
+    g_signos = "Tension arterial: " + var_tension.get() + ", Frecuencia cardiaca: " + var_fr.get() + ", Frecuencia respiratoria: " + var_fr.get() + ", Temperatura: " + var_temp.get() + ", Saturacion: " + var_sat.get()
     g_nombre = var_paterno.get() + " " + var_materno.get() +" "+ var_nombre.get()
     g_pp = var_alergias.get() + var_enfermedades.get() + var_hospitalizacion.get() + var_cirugias.get() + var_transfusiones.get() + var_traumatismos.get()
     g_np = var_etilismo.get() + var_tabaco.get() + var_toxicomania.get()
@@ -50,7 +52,8 @@ def evo():
             g_nota.insert("end","Nombre:" + g_nombre + "\nFecha de nacimiento: " + var_nacimiento.get() + "\nEdad: " + var_edad.get() +"\n\nAPP: " +g_pp+ "\n\nAPNP: "+g_np+"\n\nPadecimiento actual:"+g_actual+"\n\nSignos vitales: " + g_signos +  ".\n\nExploracion fisica:"+g_ef+ ".\n\nAnalisis:"+var_analisis.get()+ ".\n\nManejo:" +var_manejo.get() )
 
 
-def gen_nota():#Funcion para generar las notas del paciente, almacena los valores en variables
+#Funcion para generar las notas del paciente, almacena los valores en variables y finalmente lo agrega al scrolledtext para su revision modificacion y copiado.
+def gen_nota():
 
     g_check2 = check_roja.get()
     g_check3 = check_blanca.get()
@@ -73,73 +76,109 @@ def gen_nota():#Funcion para generar las notas del paciente, almacena los valore
             g_nota.insert("end","Nombre:" + g_nombre + "\nFecha de nacimiento: " + var_nacimiento.get() + "\nEdad: " + var_edad.get() +"\n\nAPP: " +g_pp+"\n\nAntecedentes gineco-obstetricos: "+g_gyo+"\n\nAPNP: "+g_np+"\n\nPadecimiento actual:" + g_actual +"\n\nSignos vitales: " + g_signos + ".\n\nExploracion fisica:"+g_ef+".\n\nAnalisis:"+var_analisis.get()+ ".\n\nManejo:" +var_manejo.get() )
     else:
         g_nota.insert("end","Nombre:" + g_nombre + "\nFecha de nacimiento: " + var_nacimiento.get() + "\nEdad: " + var_edad.get() + "\nDireccion: "+g_direccion+ "\nNumero de telefono: " + var_numero.get() + "\n\nAPP: " +g_pp+ "\n\nAPNP: "+g_np+"\n\nPadecimiento actual:"+g_actual+"\n\nSignos vitales: " + g_signos +  ".\n\nExploracion fisica:"+g_ef+".\n\nAnalisis:"+var_analisis.get()+ ".\n\nManejo:" +var_manejo.get() )
+
+#
+# Funcion para generar la nota de word
+#
+def gen_word():
+    g_check2 = check_roja.get()
+    g_check3 = check_blanca.get()
+    g_check4 = check_quimica.get()
+    g_check5 = check_otro.get()
+    g_check= check_embarazo.get()
+    g_signos = "Tension arterial: " + var_tension.get() + "Frecuencia cardiaca: " + var_fr.get() + "Frecuencia respiratoria: " + var_fr.get() + "Temperatura: " + var_temp.get() + "Saturacion: " + var_sat.get()
+    g_nombre = var_paterno.get() + " " + var_materno.get() +" "+ var_nombre.get()
+    g_direccion = var_ca.get() + ", colonia: "+var_colonia.get() +", numero: " + var_numero.get() +", codigo postal: " + var_postal.get()
+    g_pp = var_alergias.get() + var_enfermedades.get() + var_hospitalizacion.get() + var_cirugias.get() + var_transfusiones.get() + var_traumatismos.get()
+    g_np = var_etilismo.get() + var_tabaco.get() + var_toxicomania.get()
+    g_gyo = "Menarca: "+ var_menarca.get() + ", Inicio de vida sexual activa: " + var_ivsa.get() + ", numero de parejas sexualmente activas: "+ var_npsa.get() + ", embarazo: "+ var_embarazo.get() + ", gestas: "+ var_gesta.get() + ", partos: "+ var_parto.get() + ", cesarea: "+ var_cesarea.get() + ", aborto: "+ var_aborto.get() + ", citologias: "+ var_citologia.get() + ", fecha de ultima menstruacion: "+ var_menstruacion.get()
+    g_ef = var_neuro.get() + var_piel.get() + var_cabeza.get() + var_cuello.get() + var_torax.get() + var_abdomen.get() + var_genitales.get() + var_extremidades.get()
+    g_actual = var_actual.get()
+    if sexo_eleccion.get() == "Femenino":
+        if g_check == 1:
+            word_nota= "Nombre:" + g_nombre + "\nFecha de nacimiento: " + var_nacimiento.get() + "\nEdad: " + var_edad.get() +"\n\nAPP: " +g_pp+"\n\nAntecedentes gineco-obstetricos: "+g_gyo+"\n\nSemanas de gestacion por fum: " +var_sdg.get()+ ", semanas de gestacion por ultrasonido: "+ var_usg.get() +"\n\nAPNP: "+g_np+"\n\nPadecimiento actual:" + g_actual +"\n\nSignos vitales: " + g_signos + ".\n\nExploracion fisica:"+g_ef+".\n\nAnalisis:"+var_analisis.get()+ ".\n\nManejo:" +var_manejo.get()
+        else:
+            word_nota= "Nombre:" + g_nombre + "\nFecha de nacimiento: " + var_nacimiento.get() + "\nEdad: " + var_edad.get() +"\n\nAPP: " +g_pp+"\n\nAntecedentes gineco-obstetricos: "+g_gyo+"\n\nAPNP: "+g_np+"\n\nPadecimiento actual:" + g_actual +"\n\nSignos vitales: " + g_signos + ".\n\nExploracion fisica:"+g_ef+".\n\nAnalisis:"+var_analisis.get()+ ".\n\nManejo:" +var_manejo.get()
+    else:
+        word_nota= "Nombre:" + g_nombre + "\nFecha de nacimiento: " + var_nacimiento.get() + "\nEdad: " + var_edad.get() + "\nDireccion: "+g_direccion+ "\nNumero de telefono: " + var_numero.get() + "\n\nAPP: " +g_pp+ "\n\nAPNP: "+g_np+"\n\nPadecimiento actual:"+g_actual+"\n\nSignos vitales: " + g_signos +  ".\n\nExploracion fisica:"+g_ef+".\n\nAnalisis:"+var_analisis.get()+ ".\n\nManejo:" +var_manejo.get()
+            
+    documento = aw.Document()
+    generador = aw.DocumentBuilder(documento)
+    generador.write(word_nota)
+    documento.save("Notas/nota.docx")
+#
+#Realiza limpieza de los campos de texto para realizar nueva nota
+#
 def n_limpiar():
     alergia.insert('end',t_alergia)
     g_nota.delete("1.0", "end")    
     
     
-    alergia.delete("end")    
-    
-    ''''
-    paterno.delete("end")
-    materno.delete("end")
-    nombre.delete("end")
-    edad.delete("end")
-    nacimiento.delete("end")
-    calle.delete("end")
-    colonia.delete("end")
-    telefono.delete("end")
-    postal.delete("end")
-    numero.delete("end")
-    enfermedades.delete("end")    
+    alergia.delete("end")
+    paterno.delete("0",'end')
+    materno.delete("0",'end')
+    nombre.delete("0",'end')
+    edad.delete("0",'end')
+    nacimiento.delete("0",'end')
+    calle.delete("0",'end')
+    colonia.delete("0",'end')
+    telefono.delete("0",'end')
+    postal.delete("0",'end')
+    numero.delete("0",'end')
+    enfermedades.delete("0",'end') 
     enfermedades.insert('end',t_enf)
-    hospitalizacion.delete("end")    
+    hospitalizacion.delete("0",'end')    
     hospitalizacion.insert('end',t_hosp)
-    cirugia.delete("end")    
+    cirugia.delete("0",'end')    
     cirugia.insert('end',t_cir)
-    traumatismo.delete("end")    
+    traumatismo.delete("0",'end')   
     traumatismo.insert('end',t_trauma)
-    transfusion.delete("end")    
+    transfusion.delete("0",'end')   
     transfusion.insert('end',t_trans)
-    etilico.delete("end")    
+    etilico.delete("0",'end')    
     etilico.insert('end',t_etilismo)
-    tabaco.delete("end")    
+    tabaco.delete("0",'end') 
     tabaco.insert('end',t_tabaquismo)
-    toxicomania.delete("end")    
+    toxicomania.delete("0",'end')   
     toxicomania.insert('end',t_drogas)
-    otros.delete("end")  
-    menarca.delete("end")    
-    ivsa.delete("end")
-    npsa.delete("end")
-    embarazo.delete("end")
-    gesta.delete("end")
-    parto.delete("end")
-    cesarea.delete("end")
-    aborto.delete("end")
-    citologia.delete("end")
-    menstruacion.delete("end")
-    sdg.delete("end")
-    usg.delete("end")
-    actual.delete("end")
-    analisis.delete("end")
-    manejo.delete("end")
-    neuro.insert('end',t_neurologico)
-    neuro.delete("end")    
-    piel.delete("end")    
+    otros.delete("0",'end')  
+    menarca.delete("0",'end')    
+    ivsa.delete("0",'end')
+    npsa.delete("0",'end')
+    embarazo.delete("0",'end')
+    gesta.delete("0",'end')
+    parto.delete("0",'end')
+    cesarea.delete("0",'end')
+    aborto.delete("0",'end')
+    citologia.delete("0",'end')
+    menstruacion.delete("0",'end')
+    sdg.delete("0",'end')
+    usg.delete("0",'end')
+    actual.delete("0",'end')
+    analisis.delete("0",'end')
+    manejo.delete("0",'end')
+    svt.delete('0','end')
+    fc.delete('0','end')
+    fr.delete('0','end')
+    tc.delete('0','end')
+    sat.delete('0','end')
+    neuro.delete("0",'end')
+    neuro.insert('end',t_neurologico)    
+    piel.delete("0",'end')    
     piel.insert('end',t_piel)
-    cabeza.delete("end")    
+    cabeza.delete("0",'end')   
     cabeza.insert('end',t_craneo)
-    cuello.delete("end")    
+    cuello.delete("0",'end')   
     cuello.insert('end',t_cuello)
-    torax.insert('end',t_torax)
-    torax.delete("end")    
-    abdomen.delete("end")    
+    torax.delete("0",'end') 
+    torax.insert('end',t_torax)   
+    abdomen.delete("0",'end')   
     abdomen.insert('end',t_abdomen)
-    genitales.delete("end")
+    genitales.delete("0",'end')
     genitales.insert('end',t_genitales)
-    extremidades.delete("end")    
+    extremidades.delete("0",'end')    
     extremidades.insert('end',t_extremidades)
-    '''
+    
     
 def tablas ():
     obt_paterno = var_paterno.get()
@@ -796,6 +835,8 @@ generar.grid(column=0, row=1)
 limpiar_nota = ttk.Button(frame_opciones, text="Nota nueva", command=n_limpiar)
 limpiar_nota.grid(column=1, row=0)
 
+generar_word=ttk.Button(frame_opciones, text="Generar nota de word", command=gen_word)
+generar_word.grid(column=1, row=1)
 #almacenar = ttk.Button(frame_patologicosp, text="Almacenar", command=tablas)
 #almacenar.grid(column=2 , row=0)
 
