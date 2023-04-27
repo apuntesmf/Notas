@@ -1,12 +1,8 @@
 import tkinter as tk
-from pathlib import Path
 from tkinter import VERTICAL, Y, Scrollbar, ttk, scrolledtext, Menu
 from tkinter import messagebox as msg
 from tkinter.scrolledtext import ScrolledText
 from tkinter import Menu
-
-
-
 
 ven = tk.Tk()
 ven.title("pacientes")
