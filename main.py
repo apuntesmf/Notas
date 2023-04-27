@@ -4,7 +4,7 @@ from tkinter import VERTICAL, Y, Scrollbar, ttk, scrolledtext, Menu
 from tkinter import messagebox as msg
 from tkinter.scrolledtext import ScrolledText
 from tkinter import Menu
-from limpiador import n_limpiar
+
 
 
 
@@ -31,7 +31,7 @@ def evo():
     g_nombre = var_paterno.get() + " " + var_materno.get() +" "+ var_nombre.get()
     g_pp = var_alergias.get() + var_enfermedades.get() + var_hospitalizacion.get() + var_cirugias.get() + var_transfusiones.get() + var_traumatismos.get()
     g_np = var_etilismo.get() + var_tabaco.get() + var_toxicomania.get()
-    g_gyo = "Menarca: "+ var_menarca.get() + ", Inicio de vida sexual activa: " + var_ivsa.get() + ", numero de parejas sexualmente activas: "+ var_npsa.get() + ", embarazo: "+ var_embarazo.get() + ", gestas: "+ var_gesta.get() + ", partos: "+ var_parto.get() + ", cesarea: "+ var_cesarea.get() + ", aborto: "+ var_aborto.get() + ", citologias: "+ var_citologia.get() + ", fecha de ultima menstruacion: "+ var_menstruacion.get()
+    g_gyo = "Menarca: "+ var_menarca.get() + ", Inicio de vida sexual activa: " + var_ivsa.get() + ", numero de parejas sexualmente activas: "+ var_npsa.get() + ", gestas: "+ var_gesta.get() + ", partos: "+ var_parto.get() + ", cesarea: "+ var_cesarea.get() + ", aborto: "+ var_aborto.get() + ", citologias: "+ var_citologia.get() + ", fecha de ultima menstruacion: "+ var_menstruacion.get()
     g_ef = var_neuro.get() + var_piel.get() + var_cabeza.get() + var_cuello.get() + var_torax.get() + var_abdomen.get() + var_genitales.get() + var_extremidades.get()
     g_actual = var_actual.get()
     g_diagnostico = var_diagnostico.get()
@@ -96,7 +96,7 @@ def gen_historia():
     g_direccion = var_calle.get() + ", colonia: "+var_colonia.get() +", numero: " + var_numero.get() +", codigo postal: " + var_postal.get()
     g_pp = var_alergias.get() + var_enfermedades.get() + var_hospitalizacion.get() + var_cirugias.get() + var_transfusiones.get() + var_traumatismos.get()
     g_np = var_etilismo.get() + var_tabaco.get() + var_toxicomania.get()
-    g_gyo = "Menarca: "+ var_menarca.get() + ", Inicio de vida sexual activa: " + var_ivsa.get() + ", numero de parejas sexualmente activas: "+ var_npsa.get() + ", embarazo: "+ var_embarazo.get() + ", gestas: "+ var_gesta.get() + ", partos: "+ var_parto.get() + ", cesarea: "+ var_cesarea.get() + ", aborto: "+ var_aborto.get() + ", citologias: "+ var_citologia.get() + ", fecha de ultima menstruacion: "+ var_menstruacion.get()
+    g_gyo = "Menarca: "+ var_menarca.get() + ", Inicio de vida sexual activa: " + var_ivsa.get() + ", numero de parejas sexualmente activas: "+ var_npsa.get() + ", gestas: "+ var_gesta.get() + ", partos: "+ var_parto.get() + ", cesarea: "+ var_cesarea.get() + ", aborto: "+ var_aborto.get() + ", citologias: "+ var_citologia.get() + ", fecha de ultima menstruacion: "+ var_menstruacion.get()
     g_ef = var_neuro.get() + var_piel.get() + var_cabeza.get() + var_cuello.get() + var_torax.get() + var_abdomen.get() + var_genitales.get() + var_extremidades.get()
     g_actual = var_actual.get()
     g_diagnostico = var_diagnostico.get()
@@ -213,7 +213,7 @@ def nota_texto():
     f.write(word_nota)
     f.close()
     
-'''def n_limpiar():
+def n_limpiar():
     #Realiza limpieza de los campos de texto para realizar nueva nota
     g_nota.delete("1.0", "end")    
     alergia.delete("0",'end')
@@ -248,7 +248,6 @@ def nota_texto():
     menarca.delete("0",'end')    
     ivsa.delete("0",'end')
     npsa.delete("0",'end')
-    embarazo.delete("0",'end')
     gesta.delete("0",'end')
     parto.delete("0",'end')
     cesarea.delete("0",'end')
@@ -319,7 +318,7 @@ def nota_texto():
     calcio.delete("0","end")
     cl.delete("0","end")
     hglu.delete("0","end")
-    otros.delete("0","end")'''
+    otros.delete("0","end")
 
     
 # ++++++++++++++++++++++++++++++++++++++
@@ -543,11 +542,6 @@ ttk.Label(frame_gyo, text="NPSA").grid(column=4, row=0)
 var_npsa = tk.StringVar() #crea la variable que asignara el valor de la nota
 npsa = ttk.Entry(frame_gyo, width="20", textvariable=var_npsa)
 npsa.grid(column=5, row=0) # crea la caja de texto para escribir la nota
-
-ttk.Label(frame_gyo, text="Embarazos").grid(column=0, row=1)
-var_embarazo = tk.StringVar() #crea la variable que asignara el valor de la nota
-embarazo = ttk.Entry(frame_gyo, width="20", textvariable=var_embarazo)
-embarazo.grid(column=1, row=1) # crea la caja de texto para escribir la nota
 
 ttk.Label(frame_gyo, text="Gestas").grid(column=2, row=1)
 var_gesta = tk.StringVar() #crea la variable que asignara el valor de la nota
@@ -966,7 +960,7 @@ guardar = ttk.Button(frame_opciones, text="Almacenar nota", command=nota_texto)
 guardar.grid(column=0, row=1)
 
 
-limpiar_nota = ttk.Button(frame_opciones, text="Limpiar nota", command=lambda: limpiador(n_limpiar))
+limpiar_nota = ttk.Button(frame_opciones, text="Limpiar nota", command=n_limpiar)
 limpiar_nota.grid(column=1, row=1)
 
 
