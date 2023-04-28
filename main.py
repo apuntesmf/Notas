@@ -511,7 +511,7 @@ var_citologia = tk.StringVar() #crea la variable que asignara el valor de la not
 citologia = ttk.Entry(frame_gyo, width="20", textvariable=var_citologia)
 citologia.grid(column=5, row=2) # crea la caja de texto para escribir la nota
 
-
+# apartado para agregar los datos apra el calculo de fecha probable de parto asi como de semanas de gestacion.
 ttk.Label(frame_gyo, text="Fecha de Ultima Menstruacion").grid(column=0, row=3)
 ttk.Label(frame_gyo, text="Dia").grid(column=0, row=4)
 dia_cb=ttk.Combobox(frame_gyo,values=["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"] )
