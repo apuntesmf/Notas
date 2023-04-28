@@ -511,16 +511,24 @@ var_citologia = tk.StringVar() #crea la variable que asignara el valor de la not
 citologia = ttk.Entry(frame_gyo, width="20", textvariable=var_citologia)
 citologia.grid(column=5, row=2) # crea la caja de texto para escribir la nota
 
-ttk.Label(frame_gyo, text="Fecha de ultima menstruacion").grid(column=0, row=3)
+
+ttk.Label(frame_gyo, text="Fecha de Ultima Menstruacion").grid(column=0, row=3)
+ttk.Label(frame_gyo, text="Dia").grid(column=0, row=4)
+dia_cb=ttk.Combobox(frame_gyo,values=["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"] )
+dia_cb.grid(column=1, row=4)
+ttk.Label(frame_gyo, text="Mes").grid(column=2, row=4)
+mes_cb=ttk.Combobox(frame_gyo,values=["1","2","3","4","5","6","7","8","9","10","11","12"] )
+mes_cb.grid(column=3, row=4)
+ttk.Label(frame_gyo, text="Ano").grid(column=4, row=4)
 var_menstruacion = tk.StringVar() #crea la variable que asignara el valor de la nota
-menstruacion = ttk.Entry(frame_gyo, width="20", textvariable=var_menstruacion)
-menstruacion.grid(column=1, row=3) # crea la caja de texto para escribir la nota
+ano_cb = ttk.Entry(frame_gyo, width="20", textvariable=var_menstruacion).grid(column=5, row=4)
+
 
 #######################
 #Antecedentes embarazo
 #######################
 frame_embarazo = ttk.LabelFrame(tab1, text="Embarazo")# crea el frame para los datos patologicos
-frame_embarazo.grid(column=0, row=4, pady=2)# asigna el espacio en el que aparecera el frame.
+frame_embarazo.grid(column=0, row=5, pady=2)# asigna el espacio en el que aparecera el frame.
 
 check_embarazo = tk.IntVar()
 check = tk.Checkbutton(frame_embarazo, text="Positivo", variable=check_embarazo)
@@ -537,7 +545,7 @@ usg = ttk.Entry(frame_embarazo, width="20", textvariable=var_usg)
 usg.grid(column=4, row=0) # crea la caja de texto para escribir la nota
 
 frame_actual = ttk.LabelFrame(tab1, text="Padecimiento actual")# crea el frame para los datos patologicos
-frame_actual.grid(column=0, row=5, pady=2)
+frame_actual.grid(column=0, row=6, pady=2)
 
 ttk.Label(frame_actual, text="Padecimiento actual").grid(column=0, row=0)
 var_actual = tk.StringVar() #crea la variable que asignara el valor de la nota
