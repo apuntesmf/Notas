@@ -249,7 +249,7 @@ def n_limpiar():
     cesarea.delete("0",'end')
     aborto.delete("0",'end')
     citologia.delete("0",'end')
-    menstruacion.delete("0",'end')
+    #menstruacion.delete("0",'end')
     sdg.delete("0",'end')
     usg.delete("0",'end')
     actual.delete("0",'end')
@@ -316,6 +316,8 @@ def n_limpiar():
     hglu.delete("0","end")
     otros.delete("0","end")
 
+def calculo_fum():
+    pass
     
 # ++++++++++++++++++++++++++++++++++++++
 #   GENERA LOS TABS DE NAVEGACION
