@@ -1,8 +1,9 @@
 import tkinter as tk
-from tkinter import VERTICAL, Y, Scrollbar, ttk, scrolledtext, Menu
+from tkinter import VERTICAL, Y, DoubleVar, Scrollbar, ttk, scrolledtext, Menu
 from tkinter import messagebox as msg
 from tkinter.scrolledtext import ScrolledText
 from tkinter import Menu
+from decimal import *
 
 ven = tk.Tk()
 ven.title("pacientes")
@@ -327,17 +328,15 @@ def calculo_fum():
     
     pass
 def receta():
-    nombre=var_medname.get()
-    mg =var_medmg.get()
-    ml=var_medml.get()
-    hora=dia_med.get()
-    dias=var_media.get()
-    dosis=var_dosis.get()
-    kg=var_kg.get()
+    nombre = var_medname.get()
+    mg = var_medmg.get()
+    ml = var_medml.get()
+    hora = dia_med.get()
+    dias = var_media.get()
+    kg = var_kg.get()
+    dosis = var_dosis.get()
     checkmed=check_med.get()
-    print(kg)
-    print(checkmed)
-    print(hora)
+    
     if var1.get()==1:
         manejo.insert("end", nombre + "tomar " + str(dosis) +" cada " + str(hora) +" horas por " +str(dias) + " dias. " )
     elif var1.get()==0:
@@ -355,25 +354,14 @@ def receta():
                 calculos=float(calculos)
                 manejo.insert("end", nombre + str(mg) + "mg/" + str(ml) + " ml, " + "tomar" + str(calculos) +" ml cada " + str(hora) +" horas por " +str(dias) + " dias." )
         else:
-            calculos = (((float(kg) * float(dosis)) * float(ml)) / float(mg))
-            manejo.insert("end", nombre + str(mg) + "mg/" + str(ml) + " ml, " + "tomar " + str(calculos) +" ml cada " + str(hora) +" horas por " +str(dias) + " dias. " )
+            
+            dosis = float(dosis) * kg
+            dosis = dosis * ml
+            dosis = dosis / mg
+            manejo.insert("end", nombre + str(mg) + "mg/" + str(ml) + " ml, " + "tomar " + str(dosis) +" ml cada " + str(hora) +" horas por " +str(dias) + " dias. " )
 def medidas():
     manejo.insert("end","Medidas generales: Datos de alarma. Cita abierta a urgencias en caso de presentar datos de alarma.")      
-def medadulto():
-    
-    if var1.get() == 1:
-        medmg.config(state="disabled")
-        medml.config(state="disabled")
-    else:
-        medmg.config(state="enabled")
-        medml.config(state="enabled")
 
-
-    
-    
-    
-    
-    
 
 # ++++++++++++++++++++++++++++++++++++++
 #   GENERA LOS TABS DE NAVEGACION
@@ -1045,9 +1033,6 @@ check_med = tk.IntVar()
 checkmed = tk.Checkbutton(frame_med, text="dosis?", variable=check_med)
 checkmed.grid(column=2, row=4)
 
-
-c1 = tk.Checkbutton(frame_med, text='Adulto',variable=var1, onvalue=1, offvalue=0, command=medadulto)
-c1.grid(column=2, row=5)
 
 manejo.insert("end", "Medicamentos: ")
 
