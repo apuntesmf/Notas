@@ -10,7 +10,7 @@ ven.title("pacientes")
 
 
 def info():
-    tk.messagebox.showinfo('Acerca de','Version: 29.04.23A\n Creador: R3MF Luna')
+    tk.messagebox.showinfo('Acerca de','Version: 04.05.23A\n Creador: Med.Luna Medico Familiar.\n apuntesmf.com')
     
 def evo():
     g_check = check_embarazo.get()
@@ -164,7 +164,7 @@ def nota_texto():
     g_notafem = g_nombre + '\n\n' + g_actual + '\n\n' + g_pp + '\n\n' + g_np + '\n\n' + '\n\n' + g_gyo + '\n\n' + g_signos + '\n\n' + g_ef + '\n\n'
     g_analisis = var_analisis.get()
     g_diagnostico = var_diagnostico.get()
-    manejo = "\n\nMedicamentos\n\n" +var_manejo.get()
+    manejo = "\n\nMedicamentos:\n" +var_manejo.get()
     f = open(g_nombre+".txt","x")
     
     if sexo_eleccion.get() == "Femenino":
@@ -336,31 +336,33 @@ def receta():
     kg = var_kg.get()
     dosis = var_dosis.get()
     checkmed=check_med.get()
-    
-    if var1.get()==1:
-        manejo.insert("end", nombre + "tomar " + str(dosis) +" cada " + str(hora) +" horas por " +str(dias) + " dias. " )
-    elif var1.get()==0:
-        if checkmed == 1:
-            if hora == "6":
-                calculos = ((kg * dosis * ml) / mg) / 4
-                calculos=float(calculos)
-                manejo.insert("end", nombre + str(mg) + "mg/" + str(ml) + " ml, " + "tomar" + str(calculos) +" ml cada " + str(hora) +" horas por " +str(dias) + " dias." )
-            elif hora == "8":
-                calculos = ((kg * dosis * ml) / mg) / 3
-                calculos=float(calculos)
-                manejo.insert("end", nombre + str(mg) + "mg/" + str(ml) + " ml, " + "tomar" + str(calculos) +" ml cada " + str(hora) +" horas por " +str(dias) + " dias." )
-            elif hora == "12":
-                calculos = ((kg * dosis * ml) / mg) / 2
-                calculos=float(calculos)
-                manejo.insert("end", nombre + str(mg) + "mg/" + str(ml) + " ml, " + "tomar" + str(calculos) +" ml cada " + str(hora) +" horas por " +str(dias) + " dias." )
-        else:
-            
-            dosis = float(dosis) * kg
-            dosis = dosis * ml
-            dosis = dosis / mg
-            manejo.insert("end", nombre + str(mg) + "mg/" + str(ml) + " ml, " + "tomar " + str(dosis) +" ml cada " + str(hora) +" horas por " +str(dias) + " dias. " )
+
+    if checkmed==1:
+        dosis = float(dosis) * kg
+        dosis = dosis * ml
+        dosis = dosis / mg
+        manejo.insert("end", nombre +  str(mg) + "mg/" + str(ml) + " ml, " + "tomar " + str(dosis) +" ml cada " + str(hora) +" horas por " +str(dias) + " dias.\n " )
+    elif checkmed==0:
+        if hora == "6":
+            calculos = ((kg * dosis * ml) / mg) / 4
+            calculos=float(calculos)
+            manejo.insert("end", nombre + str(mg) + "mg/" + str(ml) + " ml, " + "tomar" + str(calculos) +" ml cada " + str(hora) +" horas por " +str(dias) + " dias.\n" )
+        elif hora == "8":
+            calculos = ((kg * dosis * ml) / mg) / 3
+            calculos=float(calculos)
+            manejo.insert("end", nombre + str(mg) + "mg/" + str(ml) + " ml, " + "tomar" + str(calculos) +" ml cada " + str(hora) +" horas por " +str(dias) + " dias.\n" )
+        elif hora == "12":
+            calculos = ((kg * dosis * ml) / mg) / 2
+            calculos=float(calculos)
+            manejo.insert("end", nombre + str(mg) + "mg/" + str(ml) + " ml, " + "tomar" + str(calculos) +" ml cada " + str(hora) +" horas por " +str(dias) + " dias.\n" )
 def medidas():
-    manejo.insert("end","Medidas generales: Datos de alarma. Cita abierta a urgencias en caso de presentar datos de alarma.")      
+    alarmas = alarma_eleccion.get()
+    if alarmas == 'diarrea':
+        manejo.insert("end",'Medidas generales: ' + t_diarrea +t_general)
+    elif  alarmas == 'respiratorio':
+        manejo.insert("end",'Medidas generales: ' +  t_respiratorio +t_general)
+    elif  alarmas == 'obstetricos':
+        manejo.insert("end",'Medidas generales: ' +  t_obstetricos +t_general)
 
 
 # ++++++++++++++++++++++++++++++++++++++
@@ -374,11 +376,10 @@ ven.config(menu=menu_bar)
 
 file_menu = Menu(menu_bar, tearoff=0)
 file_menu.add_command(label='Acerca de', command=info)
-forms = Menu(menu_bar, tearoff=0)
-forms.add_command(label="lumbalgia")
+
 
 menu_bar.add_cascade(label="Archivo", menu=file_menu)
-menu_bar.add_cascade(label="Formatos", menu=forms)
+
 
 
 
@@ -405,8 +406,13 @@ tab5 = ttk.Frame(tabs)
 tabs.add(tab5, text='Nota final')
 tabs.pack(expand=1, fill='both')
 
+#texto que se insertara en las cajas de texo para medidas generales.
+t_general='\nEn caso de continuar con sintomas acudir a consulta externa.\n Cita abierta a urgencias en caso de presentar datos de alarma. '
+t_respiratorio = 'Datos de alarma(disnea, sibnilancias, piel que se unde entre costillas, cambio de coloracion de unas y labios). '
+t_diarrea = 'Datos de alarma(llanto sin lagrimas, hundimiento de ojos,irritabilidad, boca y lengua seca, llanto sin lagrimas, no presenta micciones). '
+t_obstetricos = 'Datos de alarma(Sangrado vaginal,  convulsiones, falta de motilidad fetal, fiebre, dolor de cabeza, ver luces, escuchar zumbidos, dolor abdominal.) '
+
 #texto que se insertara en las cajas de texo para explroacion fisica
-var1 = tk.IntVar()
 t_alergia= 'Alergias a medicamentos negadas, '
 t_enf= 'enfermedades crónico-degenerativas negadas, '
 t_hosp= 'hospitalizaciones negadas, '
@@ -974,7 +980,7 @@ var_analisis=tk.StringVar()
 analisis = ttk.Entry(frame_analisis, width="60", textvariable=var_analisis)
 analisis.grid(column=1, row=0)
 
-frame_manejo = ttk.LabelFrame(tab4, text="Manejo")
+frame_manejo = ttk.LabelFrame(tab4)
 frame_manejo.grid(column=0, row=1)
 
 ttk.Label(frame_manejo, text="Manejo").grid(column=0, row=0)
@@ -1030,11 +1036,18 @@ media = ttk.Entry(frame_med, width="10", textvariable=var_media)
 media.grid(column=1, row=4)
 
 check_med = tk.IntVar()
-checkmed = tk.Checkbutton(frame_med, text="dosis?", variable=check_med)
+checkmed = tk.Checkbutton(frame_med, text="dosis", variable=check_med)
 checkmed.grid(column=2, row=4)
 
+ttk.Label(frame_med, text="Datos de alarma:").grid(column=0, row=5)
+alarma=tk.StringVar()
+alarma_eleccion = ttk.Combobox(frame_med, width=12, textvariable=alarma)
+alarma_eleccion["values"] = ("respiratorio", "diarrea", 'obstetricos')
+alarma_eleccion.grid(column=1, row=5)
+alarma_eleccion.current(0)
 
-manejo.insert("end", "Medicamentos: ")
+
+manejo.insert("end","")
 
 
 #############################################
@@ -1063,9 +1076,9 @@ limpiar_nota = ttk.Button(frame_opciones, text="Limpiar nota", command=n_limpiar
 limpiar_nota.grid(column=1, row=1)
 
 add_med = ttk.Button(frame_med, text="Agregar medicamento", command=receta)
-add_med.grid(column=0, row=5)
+add_med.grid(column=0, row=6)
 add_med = ttk.Button(frame_med, text="Agregar medidas generales", command=medidas)
-add_med.grid(column=1, row=5)
+add_med.grid(column=1, row=6)
 
 
 #========================
