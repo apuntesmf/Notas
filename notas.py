@@ -1,3 +1,4 @@
+import sqlite3
 import tkinter as tk
 from tkinter import VERTICAL, Y, DoubleVar, Scrollbar, ttk, scrolledtext, Menu
 from tkinter import messagebox as msg
@@ -5,13 +6,98 @@ from tkinter.scrolledtext import ScrolledText
 from tkinter import Menu
 from decimal import *
 
+
 ven = tk.Tk()
 ven.title("pacientes")
+conexion = sqlite3.connect('notas.db')
+cursor = conexion.cursor()
+cursor.execute("SELECT enfermedad FROM enfermedades ")
+dc=[]
+for i in cursor:
+    dc.append(i)
+conexion.close()
 
-
-def info():
-    tk.messagebox.showinfo('Acerca de','Version: 04.05.23A\n Creador: Med.Luna Medico Familiar.\n apuntesmf.com')
-    
+#Funciones de base de datos
+def seleccionar():
+    var1 =combo.get()
+    conexion = sqlite3.connect('notas.db')
+    cursor = conexion.cursor()
+    cursor.execute("SELECT neurologico FROM enfermedades  WHERE enfermedad = ?",(var1,))
+    conexion.commit()
+    val=cursor.fetchone()
+    neuro.insert("end",val[0])
+    cursor.execute("SELECT piel FROM enfermedades  WHERE enfermedad = ?",(var1,))
+    conexion.commit()
+    val=cursor.fetchone()
+    piel.insert("end",val[0])
+    cursor.execute("SELECT cabeza FROM enfermedades  WHERE enfermedad = ?",(var1,))
+    conexion.commit()
+    val=cursor.fetchone()
+    cabeza.insert("end",val[0])
+    cursor.execute("SELECT cuello FROM enfermedades  WHERE enfermedad = ?",(var1,))
+    conexion.commit()
+    val=cursor.fetchone()
+    cuello.insert("end",val[0])
+    cursor.execute("SELECT torax FROM enfermedades  WHERE enfermedad = ?",(var1,))
+    conexion.commit()
+    val=cursor.fetchone()
+    torax.insert("end",val[0])
+    cursor.execute("SELECT abdomen FROM enfermedades  WHERE enfermedad = ?",(var1,))
+    conexion.commit()
+    val=cursor.fetchone()
+    abdomen.insert("end",val[0])
+    cursor.execute("SELECT genitales FROM enfermedades  WHERE enfermedad = ?",(var1,))
+    conexion.commit()
+    val=cursor.fetchone()
+    genitales.insert("end",val[0])
+    cursor.execute("SELECT extremidades FROM enfermedades  WHERE enfermedad = ?",(var1,))
+    conexion.commit()
+    val=cursor.fetchone()
+    extremidades.insert("end",val[0])
+    cursor.execute("SELECT analisis FROM enfermedades  WHERE enfermedad = ?",(var1,))
+    conexion.commit()
+    val=cursor.fetchone()
+    analisis.insert("end",val[0])
+    cursor.execute("SELECT manejo FROM enfermedades  WHERE enfermedad = ?",(var1,))
+    conexion.commit()
+    val=cursor.fetchone()
+    manejo.insert("end",val[0])
+    conexion.close()
+def n_enfermedad():
+    conexion = sqlite3.connect('notas.db')
+    cursor = conexion.cursor()
+    var1=var_enfermedad.get()
+    var2=var_neuro.get()
+    var3=var_piel.get()
+    var4=var_cabeza.get()
+    var5=var_cuello.get()
+    var6=var_torax.get()
+    var7=var_abdomen.get()
+    var8=var_genitales.get()
+    var9=var_extremidades.get()
+    var10=var_analisis.get()
+    var11=var_manejo.get()
+    cursor.execute("""INSERT INTO enfermedades (enfermedad,neurologico,piel,cabeza,cuello,torax,abdomen,genitales,extremidades,analisis,manejo) VALUES(?,?,?,?,?,?,?,?,?,?,?)""",(var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,var11))
+    conexion.commit()
+    conexion.close()
+def actualizar():
+    conexion = sqlite3.connect('notas.db')
+    cursor = conexion.cursor()
+    var1=combo.get()
+    var2=var_neuro.get()
+    var3=var_piel.get()
+    var4=var_cabeza.get()
+    var5=var_cuello.get()
+    var6=var_torax.get()
+    var7=var_abdomen.get()
+    var8=var_genitales.get()
+    var9=var_extremidades.get()
+    var10=var_analisis.get()
+    var11=var_manejo.get()
+    cursor.execute("""UPDATE enfermedades SET neurologico=?,piel=?,cabeza=?,cuello=?,torax=?,abdomen=?,genitales=?,extremidades=?,analisis=?,manejo=? WHERE enfermedad = ?""", (var2,var3,var4,var5,var6,var7,var8,var9,var10,var11, var1))
+    conexion.commit()
+    conexion.close()
+# Funciones de nota medica
 def evo():
     g_check = check_embarazo.get()
     g_check2 = check_roja.get()
@@ -74,7 +160,6 @@ def evo():
             g_nota.insert("end","Nombre:" + g_nombre + "\nFecha de nacimiento: " + var_nacimiento.get() + "\nEdad: " + var_edad.get() + "\n\nPadecimiento actual:" + g_actual +"\n\nAPP: " +g_pp+"\n\nSignos vitales: " + g_signos +  ".\n\nExploracion fisica:"+g_ef+ "\n\nLaboratorios: " + g_otro+".\n\nAnalisis:"+var_analisis.get()+ "\n\nDiagnostico: "+g_diagnostico+ ".\n\nManejo:" +g_manejo )
         elif g_check2 == 1 and g_check3 == 1 and g_check4 == 1 and g_check5 == 1:
             g_nota.insert("end","Nombre:" + g_nombre + "\nFecha de nacimiento: " + var_nacimiento.get() + "\nEdad: " + var_edad.get() + "\n\nPadecimiento actual:" + g_actual +"\n\nAPP: " +g_pp+"\n\nSignos vitales: " + g_signos +  ".\n\nExploracion fisica:"+g_ef+ "\n\nLaboratorios: " + g_serieroja + g_serieblanca + g_quimica + g_otro +".\n\nAnalisis:"+var_analisis.get()+ "\n\nDiagnostico: "+g_diagnostico+ ".\n\nManejo:" +g_manejo )
-
 def gen_historia():
     #Funcion para generar las notas del paciente, almacena los valores en variables y finalmente lo agrega al scrolledtext para su revision modificacion y copiado.
     g_check = check_embarazo.get()
@@ -138,7 +223,6 @@ def gen_historia():
             g_nota.insert("end","Nombre:" + g_nombre + "\nFecha de nacimiento: " + var_nacimiento.get() + "\nEdad: " + var_edad.get() + "\nDireccion: "+g_direccion+ "\nNumero de telefono: " + var_numero.get() + "\n\nPadecimiento actual:" + g_actual +"\n\nAPP: " +g_pp+"\n\nSignos vitales: " + g_signos +  ".\n\nExploracion fisica:"+g_ef+ "\n\nLaboratorios: " + g_otro+".\n\nAnalisis:"+var_analisis.get()+ "\n\nDiagnostico: "+g_diagnostico +".\n\nManejo:" +var_manejo.get() )
         elif g_check2 == 1 and g_check3 == 1 and g_check4 == 1 and g_check5 == 1:
             g_nota.insert("end","Nombre:" + g_nombre + "\nFecha de nacimiento: " + var_nacimiento.get() + "\nEdad: " + var_edad.get() + "\nDireccion: "+g_direccion+ "\nNumero de telefono: " + var_numero.get() +  "\n\nPadecimiento actual:" + g_actual +"\n\nAPP: " +g_pp+"\n\nSignos vitales: " + g_signos +  ".\n\nExploracion fisica:"+g_ef+ "\n\nLaboratorios: " + g_serieroja + g_serieblanca + g_quimica + g_otro +".\n\nAnalisis:"+var_analisis.get()+ ".\n\nManejo:" +var_manejo.get() )
-
 def nota_texto():
     #GENERA LA NOTA EN UN ARCHIVO DE TEXTO
     g_check = check_embarazo.get()
@@ -164,7 +248,7 @@ def nota_texto():
     g_notafem = g_nombre + '\n\n' + g_actual + '\n\n' + g_pp + '\n\n' + g_np + '\n\n' + '\n\n' + g_gyo + '\n\n' + g_signos + '\n\n' + g_ef + '\n\n'
     g_analisis = var_analisis.get()
     g_diagnostico = var_diagnostico.get()
-    manejo = "\n\nMedicamentos:\n" +var_manejo.get()
+    manejo = var_manejo.get()
     f = open(g_nombre+".txt","x")
     
     if sexo_eleccion.get() == "Femenino":
@@ -208,10 +292,11 @@ def nota_texto():
         elif g_check2 == 1 and g_check3 == 1 and g_check4 == 1 and g_check5 == 1:
             word_nota = g_nota +'Laboratorios:'+g_serieroja+g_serieblanca+g_quimica+g_otro+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
     f.write(word_nota)
-    f.close()
-    
+    f.close()  
 def n_limpiar():
     #Realiza limpieza de los campos de texto para realizar nueva nota
+    conexion = sqlite3.connect('notas.db')
+    cursor = conexion.cursor()
     g_nota.delete("1.0", "end")    
     alergia.delete("0",'end')
     alergia.insert('end',t_alergia)
@@ -261,22 +346,14 @@ def n_limpiar():
     fr.delete('0','end')
     tc.delete('0','end')
     sat.delete('0','end')
-    neuro.delete("0",'end')
-    neuro.insert('end',t_neurologico)    
+    neuro.delete("0",'end')   
     piel.delete("0",'end')    
-    piel.insert('end',t_piel)
     cabeza.delete("0",'end')   
-    cabeza.insert('end',t_craneo)
     cuello.delete("0",'end')   
-    cuello.insert('end',t_cuello)
-    torax.delete("0",'end') 
-    torax.insert('end',t_torax)   
+    torax.delete("0",'end')   
     abdomen.delete("0",'end')   
-    abdomen.insert('end',t_abdomen)
     genitales.delete("0",'end')
-    genitales.insert('end',t_genitales)
-    extremidades.delete("0",'end')    
-    extremidades.insert('end',t_extremidades)
+    extremidades.delete("0",'end')
     hemo.delete("0","end")
     hemato.delete("0","end")
     eritros.delete("0","end")
@@ -323,6 +400,11 @@ def n_limpiar():
     medml.delete("0","end")
     dosis.delete("0","end")
     dia_med.delete("0","end")
+    cursor.execute("SELECT enfermedad FROM enfermedades ")
+    dc=[]
+    for i in cursor:
+        dc.append(i)
+    conexion.close()
 
 def calculo_fum():
     
@@ -363,11 +445,14 @@ def medidas():
         manejo.insert("end",'Medidas generales: ' +  t_respiratorio +t_general)
     elif  alarmas == 'obstetricos':
         manejo.insert("end",'Medidas generales: ' +  t_obstetricos +t_general)
-
+def info():
+    tk.messagebox.showinfo('Acerca de','Version: 07.11.23A\n Creador: Med.Luna Medico Familiar.\n apuntesmf.com')
+    
 
 # ++++++++++++++++++++++++++++++++++++++
 #   GENERA LOS TABS DE NAVEGACION
 # ++++++++++++++++++++++++++++++++++++++
+
 
 #barra de menu
 
@@ -375,10 +460,13 @@ menu_bar = Menu(ven)
 ven.config(menu=menu_bar)
 
 file_menu = Menu(menu_bar, tearoff=0)
-file_menu.add_command(label='Acerca de', command=info)
-
-
+base_menu = Menu(menu_bar, tearoff=0)
 menu_bar.add_cascade(label="Archivo", menu=file_menu)
+file_menu.add_command(label='Acerca de', command=info)
+menu_bar.add_cascade(label="Base de datos", menu=base_menu)
+base_menu.add_command(label='Actualizar base de datos', command=actualizar)
+base_menu.add_command(label='Agregar enfermedad a base de datos', command=n_enfermedad)
+
 
 
 
@@ -695,58 +783,76 @@ var_sat = tk.StringVar() #crea la variable que asignara el valor de la nota
 sat = ttk.Entry(frame_signos, width="20", textvariable=var_sat)
 sat.grid(column=3, row=2) # crea la caja de texto para escribir la nota
 
+#
+#frame de seleccion o nueva enfermedad
+#
+frame_enfermedad = ttk.LabelFrame(tab2)
+frame_enfermedad.grid(column=0, row=1, pady=2)
+ttk.Label(frame_enfermedad, text="Enfermedades").grid(column=0,row=0)
+
+combo = ttk.Combobox(
+        frame_enfermedad,
+        state="readonly",
+        values= dc
+    )
+combo.grid(column=0,row=1)
+
+boton = ttk.Button(frame_enfermedad, text='seleccionar', command=seleccionar)
+boton.grid(column=3,row=0)
 
 ########################################################
 #APARTADO DE LA EXPLORACION
 ##########################################
 frame_exploracion = ttk.LabelFrame(tab2, text="Exploracion Fisica")
-frame_exploracion.grid(column=0, row=1, pady=2)
+frame_exploracion.grid(column=0, row=2, pady=2)
+
+
 
 ttk.Label(frame_exploracion, text="Neurologico").grid(column=0,row=0)
 var_neuro = tk.StringVar()
 neuro = ttk.Entry(frame_exploracion, width="90", textvariable=var_neuro)
 neuro.grid(column=1,row=0)
-neuro.insert("end", t_neurologico)
+
 
 ttk.Label(frame_exploracion, text="Piel y tegumentos").grid(column=0,row=1)
 var_piel = tk.StringVar()
 piel = ttk.Entry(frame_exploracion, width="90", textvariable=var_piel)
 piel.grid(column=1,row=1)
-piel.insert("end", t_piel)
+
 
 ttk.Label(frame_exploracion, text="Cabeza").grid(column=0,row=2)
 var_cabeza = tk.StringVar()
 cabeza = ttk.Entry(frame_exploracion, width="90", textvariable=var_cabeza)
 cabeza.grid(column=1,row=2)
-cabeza.insert("end", t_craneo)
+
 ttk.Label(frame_exploracion, text="Cuello").grid(column=0,row=3)
 var_cuello = tk.StringVar()
 cuello = ttk.Entry(frame_exploracion, width="90", textvariable=var_cuello)
 cuello.grid(column=1,row=3)
-cuello.insert("end", t_cuello)
+
 
 ttk.Label(frame_exploracion, text="Torax").grid(column=0,row=4)
 var_torax = tk.StringVar()
 torax = ttk.Entry(frame_exploracion, width="90", textvariable=var_torax)
 torax.grid(column=1,row=4)
-torax.insert("end", t_torax)
+
 ttk.Label(frame_exploracion, text="Abdomen").grid(column=0,row=5)
 var_abdomen = tk.StringVar()
 abdomen = ttk.Entry(frame_exploracion, width="90", textvariable=var_abdomen)
 abdomen.grid(column=1,row=5)
-abdomen.insert("end", t_abdomen)
+
 
 ttk.Label(frame_exploracion, text="Genitales").grid(column=0,row=6)
 var_genitales = tk.StringVar()
 genitales = ttk.Entry(frame_exploracion, width="90", textvariable=var_genitales)
 genitales.grid(column=1,row=6)
-genitales.insert("end", t_genitales)
+
 
 ttk.Label(frame_exploracion, text="Extremidades").grid(column=0,row=7)
 var_extremidades = tk.StringVar()
 extremidades = ttk.Entry(frame_exploracion, width="90", textvariable=var_extremidades)
 extremidades.grid(column=1,row=7)
-extremidades.insert("end", t_extremidades)
+
 
 
 ######################
@@ -1045,8 +1151,6 @@ alarma_eleccion = ttk.Combobox(frame_med, width=12, textvariable=alarma)
 alarma_eleccion["values"] = ("respiratorio", "diarrea", 'obstetricos')
 alarma_eleccion.grid(column=1, row=5)
 alarma_eleccion.current(0)
-
-
 manejo.insert("end","")
 
 
@@ -1069,17 +1173,21 @@ generar = ttk.Button(frame_opciones, text="Generar nota de consulta", command=ev
 generar.grid(column=1, row=0)
 
 guardar = ttk.Button(frame_opciones, text="Almacenar nota", command=nota_texto)
-guardar.grid(column=0, row=1)
+guardar.grid(column=1, row=1)
 
+nuevo = ttk.Button(frame_opciones, text="Limpiar", command=n_limpiar)
+nuevo.grid(column=0, row=1)
 
-limpiar_nota = ttk.Button(frame_opciones, text="Limpiar nota", command=n_limpiar)
-limpiar_nota.grid(column=1, row=1)
+idxlbl = ttk.Label(frame_opciones, text='Nombre de la enfermedad')
+idxlbl.grid(column=1,row=2)
+var_enfermedad=tk.StringVar()
+idx = ttk.Entry(frame_opciones, width="15", textvariable=var_enfermedad)
+idx.grid(column=0, row=2)
 
 add_med = ttk.Button(frame_med, text="Agregar medicamento", command=receta)
 add_med.grid(column=0, row=6)
 add_med = ttk.Button(frame_med, text="Agregar medidas generales", command=medidas)
 add_med.grid(column=1, row=6)
-
 
 #========================
 #   INICIA LA VENTANA
