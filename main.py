@@ -1,4 +1,5 @@
 import sqlite3
+import datetime
 import tkinter as tk
 from tkinter import VERTICAL, Y, DoubleVar, Scrollbar, ttk, scrolledtext, Menu
 from tkinter import messagebox as msg
@@ -9,11 +10,13 @@ from decimal import *
 
 ven = tk.Tk()
 ven.title("pacientes")
-ven.geometry('870x700')
+ven.geometry('1290x800')    
 ven.minsize(870,700)
 '''
 VARIABLES GLOBALES
 '''
+fecha = datetime.datetime.now()
+fecha=str(fecha.strftime("%x"))
 var_pat = tk.StringVar() #crea la variable que asignara el valor de la nota
 var_mat = tk.StringVar() #crea la variable que asignara el valor de la nota
 var_name = tk.StringVar() #crea la variable que asignara el valor de la nota
@@ -31,10 +34,15 @@ dc=[]
 for i in cursor:
     dc.append(i)
 
-cursor.execute("SELECT sal FROM Medicamentos ")
+cursor.execute("SELECT sal FROM medicamentos ")
 sal=[]
 for m in cursor:
     sal.append(m)
+
+cursor.execute("SELECT nombre FROM seguros ")
+seguro=[]
+for x in cursor:
+    seguro.append(x)
 conexion.close()
 
 #Funciones de base de datos
@@ -192,7 +200,8 @@ def paciente():
     var34=var_menstruacion.get()
     var35=var_sdg.get()
     var36=var_usg.get()
-    cursor.execute("""INSERT INTO paciente (sexo, apellido_p, apellido_m, nombre, f_dia, f_mes, f_ano, edad, calle,colonia, numero, cp, telefono,alergias,enfermedades,hospitalizaciones,cirugias,traumatismos,transfusiones,etilismo,tabaquismo,toxicomanias,otros,menarca,ivsa,npsa,gestas,partos,cesareas,abortos,citologias,m_dia,m_mes,m_ano,sdg,sdu) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",(var0,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,var11,var12,var13,var14,var15,var16,var17,var18,var19,var20,var21,var22,var23,var24,var25,var26,var27,var28,var29,var30,var31,var32,var33,var34,var35))
+    var37=combo_seguro.get()
+    cursor.execute("""INSERT INTO paciente (sexo, apellido_p, apellido_m, nombre, f_dia, f_mes, f_ano, edad, calle,colonia, numero, cp, telefono,alergias,enfermedades,hospitalizaciones,cirugias,traumatismos,transfusiones,etilismo,tabaquismo,toxicomanias,otros,menarca,ivsa,npsa,gestas,partos,cesareas,abortos,citologias,m_dia,m_mes,m_ano,sdg,sdu,seguros,fecha) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",(var0,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,var11,var12,var13,var14,var15,var16,var17,var18,var19,var20,var21,var22,var23,var24,var25,var26,var27,var28,var29,var30,var31,var32,var33,var34,var35,var37,fecha))
     '''ssss'''
     conexion.commit()
     conexion.close()
@@ -516,7 +525,7 @@ def n_limpiar():
     hglu.delete("0","end")
     otros.delete("0","end")
     diagnostico.delete("0","end")
-    medname.delete("0","end")
+    #medname.delete("0","end")
     media.delete("0","end")
     medmg.delete("0","end")
     medml.delete("0","end")
@@ -535,7 +544,7 @@ def cargar_med():
     conexion = sqlite3.connect('notas.db')
     cursor = conexion.cursor()
     sal=combomed.get()
-    cursor.execute("""SELECT * FROM Medicamentos WHERE sal=?""",(sal,))
+    cursor.execute("""SELECT * FROM medicamentos WHERE sal=?""",(sal,))
     prueba = cursor.fetchall()[0]
     for x in prueba:
         lista.append(x)
@@ -548,7 +557,8 @@ def cargar_med():
     medml.delete("0", 'end')
     medmg.insert("0",mg)
     medmg2.insert("0",mg2)
-    medml.insert("0",ml)    
+    medml.insert("0",ml)
+    
 def receta():
     horas = dia_med.get() 
     dosis=var_dosis.get()
@@ -749,6 +759,15 @@ var_telefono = tk.StringVar()
 telefono = ttk.Entry(frame_datospers, width="20", textvariable=var_telefono)
 telefono.grid(column=3, row=4,padx=2, pady=4)
 
+ttk.Label(frame_datospers,text='Seguro').grid(column=4, row=4, padx=2, pady=4)
+combo_seguro = ttk.Combobox(
+        frame_datospers,
+        state="readonly",
+        values= seguro,
+    )
+combo_seguro.grid(column=5, row=4, padx=2, pady=4)
+
+ttk.Label(frame_datospers, text=fecha).grid(column=6, row=4)
 #########################################
 #Antecedentes personales patologicos
 ########################################
