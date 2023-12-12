@@ -10,7 +10,7 @@ from decimal import *
 
 ven = tk.Tk()
 ven.title("pacientes")
-ven.geometry('1290x800')    
+ven.geometry('870x700')    
 ven.minsize(870,700)
 '''
 VARIABLES GLOBALES
@@ -149,6 +149,225 @@ def n_medicamento():
    
     button_busqueda=ttk.Button(topmed, text="Agregar", command=cargar)
     button_busqueda.grid(column=0, row=1, padx=2)
+def lab():
+    top = tk.Toplevel(ven)
+    top.title("Laboratorios")
+    frame_laboratorio = ttk.LabelFrame(top, text="Laboratorios")
+    frame_laboratorio.grid(column=0, row=0, pady=2)
+
+    check_roja = tk.IntVar()
+    check2 = tk.Checkbutton(frame_laboratorio, text="Serie roja", variable=check_roja)
+    check2.grid(column=0, row=0)
+    check_blanca = tk.IntVar()
+    check3 = tk.Checkbutton(frame_laboratorio, text="Serie blanca", variable=check_blanca)
+    check3.grid(column=1, row=0)
+    check_quimica = tk.IntVar()
+    check4 = tk.Checkbutton(frame_laboratorio, text="Quimica", variable=check_quimica)
+    check4.grid(column=2, row=0)
+    check_otro = tk.IntVar()
+    check5 = tk.Checkbutton(frame_laboratorio, text="Otros", variable=check_otro)
+    check5.grid(column=3, row=0)
+
+    ttk.Label(frame_laboratorio, text="Hemoglobina").grid(column=0, row=1)
+    var_hemo=tk.StringVar()
+    hemo = ttk.Entry(frame_laboratorio, width="20", textvariable=var_hemo)
+    hemo.grid(column=1, row=1)
+
+    ttk.Label(frame_laboratorio, text="Eritrocitos").grid(column=2, row=1)
+    var_eritros=tk.StringVar()
+    eritros = ttk.Entry(frame_laboratorio, width="20", textvariable=var_eritros)
+    eritros.grid(column=3, row=1)
+
+    ttk.Label(frame_laboratorio, text="Hematocrito").grid(column=4, row=1)
+    var_hemato=tk.StringVar()
+    hemato = ttk.Entry(frame_laboratorio, width="20", textvariable=var_hemato)
+    hemato.grid(column=5, row=1)
+
+    ttk.Label(frame_laboratorio, text="V.C.M").grid(column=0, row=2)
+    var_vcm=tk.StringVar()
+    vcm = ttk.Entry(frame_laboratorio, width="20", textvariable=var_vcm)
+    vcm.grid(column=1, row=2)
+
+    ttk.Label(frame_laboratorio, text="H.C.M").grid(column=2, row=2)
+    var_hcm=tk.StringVar()
+    hcm = ttk.Entry(frame_laboratorio, width="20", textvariable=var_hcm)
+    hcm.grid(column=3, row=2)
+
+    ttk.Label(frame_laboratorio, text="C.M.H.G").grid(column=4, row=2)
+    var_cmhg=tk.StringVar()
+    cmhg = ttk.Entry(frame_laboratorio, width="20", textvariable=var_cmhg)
+    cmhg.grid(column=5, row=2)
+
+    ttk.Label(frame_laboratorio, text="Plaquetas").grid(column=0, row=3)
+    var_plaqueta=tk.StringVar()
+    plaqueta = ttk.Entry(frame_laboratorio, width="20", textvariable=var_plaqueta)
+    plaqueta.grid(column=1, row=3)
+
+    ttk.Label(frame_laboratorio, text="Leucocitos").grid(column=2, row=3)
+    var_leuco=tk.StringVar()
+    leuco = ttk.Entry(frame_laboratorio, width="20", textvariable=var_leuco)
+    leuco.grid(column=3, row=3)
+
+    ttk.Label(frame_laboratorio, text="Neutrofilos%").grid(column=4, row=3)
+    var_neutro=tk.StringVar()
+    neutro = ttk.Entry(frame_laboratorio, width="20", textvariable=var_neutro)
+    neutro.grid(column=5, row=3)
+
+    ttk.Label(frame_laboratorio, text="Linfocitos%").grid(column=0, row=4)
+    var_linfo=tk.StringVar()
+    linfo = ttk.Entry(frame_laboratorio, width="20", textvariable=var_linfo)
+    linfo.grid(column=1, row=4)
+
+    ttk.Label(frame_laboratorio, text="Monocitos%").grid(column=2, row=4)
+    var_mono=tk.StringVar()
+    mono = ttk.Entry(frame_laboratorio, width="20", textvariable=var_mono)
+    mono.grid(column=3, row=4)
+
+    ttk.Label(frame_laboratorio, text="Eosinofilos%").grid(column=4, row=4)
+    var_eos=tk.StringVar()
+    eos = ttk.Entry(frame_laboratorio, width="20", textvariable=var_eos)
+    eos.grid(column=5, row=4)
+
+    ttk.Label(frame_laboratorio, text="Basofilos%").grid(column=0, row=5)
+    var_baso=tk.StringVar()
+    baso = ttk.Entry(frame_laboratorio, width="20", textvariable=var_baso)
+    baso.grid(column=1, row=5)
+
+    ttk.Label(frame_laboratorio, text="Neutrfilos#").grid(column=2, row=5)
+    var_neutro2=tk.StringVar()
+    neutro2 = ttk.Entry(frame_laboratorio, width="20", textvariable=var_neutro2)
+    neutro2.grid(column=3, row=5)
+
+    ttk.Label(frame_laboratorio, text="Linfocitos#").grid(column=4, row=5)
+    var_linfo2=tk.StringVar()
+    linfo2 = ttk.Entry(frame_laboratorio, width="20", textvariable=var_linfo2)
+    linfo2.grid(column=5, row=5)
+
+    ttk.Label(frame_laboratorio, text="Monocitos#").grid(column=0, row=6)
+    var_mono2=tk.StringVar()
+    mono2 = ttk.Entry(frame_laboratorio, width="20", textvariable=var_mono2)
+    mono2.grid(column=1, row=6)
+
+    ttk.Label(frame_laboratorio, text="Eosinofilos#").grid(column=2, row=6)
+    var_eos2=tk.StringVar()
+    eos2 = ttk.Entry(frame_laboratorio, width="20", textvariable=var_eos2)
+    eos2.grid(column=3, row=6)
+
+    ttk.Label(frame_laboratorio, text="Basofilos#").grid(column=4, row=6)
+    var_baso2=tk.StringVar()
+    baso2 = ttk.Entry(frame_laboratorio, width="20", textvariable=var_baso2)
+    baso2.grid(column=5, row=6)
+
+    ttk.Label(frame_laboratorio, text="").grid(column=0, row=7)#separacion para distincion entre quimica y formula roja y blanca
+
+    ttk.Label(frame_laboratorio, text="Glucosa").grid(column=0, row=8)
+    var_gluc=tk.StringVar()
+    gluc = ttk.Entry(frame_laboratorio, width="20", textvariable=var_gluc)
+    gluc.grid(column=1, row=8)
+
+    ttk.Label(frame_laboratorio, text="urea").grid(column=2, row=8)
+    var_urea=tk.StringVar()
+    urea = ttk.Entry(frame_laboratorio, width="20", textvariable=var_urea)
+    urea.grid(column=3, row=8)
+
+    ttk.Label(frame_laboratorio, text="Creatinina").grid(column=4, row=8)
+    var_creatinina=tk.StringVar()
+    creatinina = ttk.Entry(frame_laboratorio, width="20", textvariable=var_creatinina)
+    creatinina.grid(column=5, row=8)
+
+    ttk.Label(frame_laboratorio, text="Nitrogeno ureico").grid(column=0, row=9)
+    var_nitro=tk.StringVar()
+    nitro = ttk.Entry(frame_laboratorio, width="20", textvariable=var_nitro)
+    nitro.grid(column=1, row=9)
+
+    ttk.Label(frame_laboratorio, text="Colesterol").grid(column=2, row=9)
+    var_colesterol=tk.StringVar()
+    colesterol = ttk.Entry(frame_laboratorio, width="20", textvariable=var_colesterol)
+    colesterol.grid(column=3, row=9)
+
+
+
+    ttk.Label(frame_laboratorio, text="LDL").grid(column=0, row=10)
+    var_ldl=tk.StringVar()
+    ldl = ttk.Entry(frame_laboratorio, width="20", textvariable=var_ldl)
+    ldl.grid(column=1, row=10)
+
+    ttk.Label(frame_laboratorio, text="HDL").grid(column=2, row=10)
+    var_hdl=tk.StringVar()
+    hdl = ttk.Entry(frame_laboratorio, width="20", textvariable=var_hdl)
+    hdl.grid(column=3, row=10)
+
+    ttk.Label(frame_laboratorio, text="vldl").grid(column=4, row=10)
+    var_vldl=tk.StringVar()
+    vldl = ttk.Entry(frame_laboratorio, width="20", textvariable=var_vldl)
+    vldl.grid(column=5, row=10)
+
+    ttk.Label(frame_laboratorio, text="ALT").grid(column=0, row=11)
+    var_alt=tk.StringVar()
+    alt = ttk.Entry(frame_laboratorio, width="20", textvariable=var_alt)
+    alt.grid(column=1, row=11)
+
+    ttk.Label(frame_laboratorio, text="AST").grid(column=2, row=11)
+    var_ast=tk.StringVar()
+    ast = ttk.Entry(frame_laboratorio, width="20", textvariable=var_ast)
+    ast.grid(column=3, row=11)
+
+    ttk.Label(frame_laboratorio, text="Bilirrubina Total").grid(column=4, row=11)
+    var_bt=tk.StringVar()
+    bt = ttk.Entry(frame_laboratorio, width="20", textvariable=var_bt)
+    bt.grid(column=5, row=11)
+
+    ttk.Label(frame_laboratorio, text="Bilirrubine Directa").grid(column=0, row=12)
+    var_bd=tk.StringVar()
+    bd = ttk.Entry(frame_laboratorio, width="20", textvariable=var_bd)
+    bd.grid(column=1, row=12)
+
+    ttk.Label(frame_laboratorio, text="Bilirrubina Indirecta").grid(column=2, row=12)
+    var_bi=tk.StringVar()
+    bi = ttk.Entry(frame_laboratorio, width="20", textvariable=var_bi)
+    bi.grid(column=3, row=12)
+
+    ttk.Label(frame_laboratorio, text="Hemoglobina Glucosilada").grid(column=4, row=12)
+    var_hglu=tk.StringVar()
+    hglu = ttk.Entry(frame_laboratorio, width="20", textvariable=var_hglu)
+    hglu.grid(column=5, row=12)
+
+    ttk.Label(frame_laboratorio, text="Fosfatasa alcalina").grid(column=0, row=13)
+    var_fa=tk.StringVar()
+    fa = ttk.Entry(frame_laboratorio, width="20", textvariable=var_fa)
+    fa.grid(column=1, row=13)
+
+    ttk.Label(frame_laboratorio, text="GGT").grid(column=2, row=13)
+    var_ggt=tk.StringVar()
+    ggt = ttk.Entry(frame_laboratorio, width="20", textvariable=var_ggt)
+    ggt.grid(column=3, row=13)
+
+    ttk.Label(frame_laboratorio, text="Sodio").grid(column=4, row=13)
+    var_na=tk.StringVar()
+    na = ttk.Entry(frame_laboratorio, width="20", textvariable=var_na)
+    na.grid(column=5, row=13)
+
+    ttk.Label(frame_laboratorio, text="Potasio").grid(column=0, row=14)
+    var_k=tk.StringVar()
+    potasio = ttk.Entry(frame_laboratorio, width="20", textvariable=var_k)
+    potasio.grid(column=1, row=14)
+
+    ttk.Label(frame_laboratorio, text="Calcio").grid(column=2, row=14)
+    var_ca=tk.StringVar()
+    calcio = ttk.Entry(frame_laboratorio, width="20", textvariable=var_ca)
+    calcio.grid(column=3, row=14)
+
+    ttk.Label(frame_laboratorio, text="Cloro").grid(column=4, row=14)
+    var_cl=tk.StringVar()
+    cl = ttk.Entry(frame_laboratorio, width="20", textvariable=var_cl)
+    cl.grid(column=5, row=14)
+
+    ttk.Label(frame_laboratorio, text="Otros: ").grid(column=0, row=15)
+    var_labotro=tk.StringVar()
+    otroslab= ttk.Entry(frame_laboratorio, width="20", textvariable=var_labotro)
+    otroslab.grid(column=1, row=15)
+    
+
 
 def cargar():
     var1=var_sal.get()
@@ -161,6 +380,7 @@ def cargar():
     conexion.commit()
     conexion.close()
 def paciente():
+    fecha = datetime.datetime.now()
     conexion = sqlite3.connect('notas.db')
     cursor = conexion.cursor()
     var0=sexo_eleccion.get()
@@ -205,19 +425,78 @@ def paciente():
     '''ssss'''
     conexion.commit()
     conexion.close()
+    tk.messagebox.showinfo('Paciente','Paciente almacenado')
 def buscar():
-    var1= var_pat.get()
-    var2= var_mat.get()
-    value = var_name.get()
+    top = tk.Toplevel(ven)
+    top.title("Buscar paciente")
+
+    ttk.Label(top,text="Apellido Paterno").grid(column=0, row=0)
+    b_paterno = tk.StringVar() #crea la variable que asignara el valor de la nota
+    paterno = ttk.Entry(top,width="20", textvariable=b_paterno)
+    paterno.grid(column=1, row=0)
+
+    ttk.Label(top,text="Apellido Materno").grid(column=2, row=0)
+    b_materno = tk.StringVar() #crea la variable que asignara el valor de la nota
+    materno = ttk.Entry(top,width="20", textvariable=b_materno)
+    materno.grid(column=3, row=0)
+
+    ttk.Label(top, text="Nombres").grid(column=4, row=0)
+    b_nombre = tk.StringVar() #crea la variable que asignara el valor de la nota
+    nombre = ttk.Entry(top, width="20", textvariable=b_nombre)
+    nombre.grid(column=5, row=0,padx=2, pady=4)
+
+    btn=ttk.Button(top,text="buscar pacientes", command=buscar_paciente)
+    btn.grid(column=6, row=0)
+
+def buscar_paciente():
+    lista=[]
+    var1= var_paterno.get()
+    var2= var_materno.get()
+    var3 = var_nombre.get()
     conexion = sqlite3.connect('notas.db')
     cursor = conexion.cursor()
-
-    cursor.execute ("SELECT * FROM paciente WHERE apellido_p = ?", (var1,))
-    print(cursor.fetchall())
+    cursor.execute ("SELECT * FROM paciente WHERE apellido_p = ? AND apellido_m = ? AND nombre = ?", (var1, var2, var3))
+    prueba = cursor.fetchall()[0]
+    print(prueba)
     conexion.commit()
-   # val=cursor.fetchone()
-    
+    for x in prueba:
+        lista.append(x)
     conexion.close()
+   
+    sexo_eleccion.insert("0",lista[1])
+    f_dia.insert("0",lista[5])
+    f_mes.insert("0",lista[6])
+    f_ano.insert("0",lista[7])
+    edad.insert("0",lista[8])
+    calle.insert("0",lista[9])
+    colonia.insert("0",lista[10])
+    numero.insert("0",lista[11])
+    postal.insert("0",lista[12])
+    telefono.insert("0",lista[13])
+    alergia.insert("0",lista[14])
+    enfermedades.insert("0",lista[15])
+    hospitalizacion.insert("0",lista[16])
+    cirugia.insert("0",lista[17])
+    traumatismo.insert("0",lista[18])
+    transfusion.insert("0",lista[19])
+    etilico.insert("0",lista[20])
+    tabaco.insert("0",lista[21])
+    toxicomania.insert("0",lista[22])
+    otros.insert("0",lista[23])
+    menarca.insert("0",lista[24])
+    ivsa.insert("0",lista[25])
+    npsa.insert("0",lista[26])
+    gesta.insert("0",lista[27])
+    parto.insert("0",lista[28])
+    cesarea.insert("0",lista[29])
+    aborto.insert("0",lista[30])
+    citologia.insert("0",lista[31])
+    dia_cb.insert("0",lista[32])
+    mes_cb.insert("0",lista[33])
+    ano_cb.insert("0",lista[34])
+    sdg.insert("0",lista[35])
+    usg.insert("0",lista[36])
+        
 
 
 
@@ -228,6 +507,7 @@ def evo():
     g_check3 = check_blanca.get()
     g_check4 = check_quimica.get()
     g_check5 = check_otro.get()
+
 
     g_serieroja = 'hemoglobina: ' + var_hemo.get() +', eritrocitos: ' + var_eritros.get() +', hematocrito: ' + var_hemato.get()+', vcm: ' +vcm.get() +', hcm: ' +var_hcm.get() +', chmg: ' + var_cmhg.get() +', plt: ' + var_plaqueta.get() 
     g_serieblanca ='Leucocitos: ' +var_leuco.get() +', neutrofilos: ' + var_neutro.get() +', linfocitos: ' +var_linfo.get() +', monocitos: ' + var_mono.get() +', eosinofilos: ' + var_eos.get() +', basofilos: ' + var_baso.get() +', neutrofilos#: ' +var_neutro2.get() +', linfocitos#: ' + var_linfo2.get() +', monocitos#: ' + var_mono2.get() +', eosinofilos#: ' + var_eos2.get() +', basofilos#: ' + var_baso2.get()
@@ -416,7 +696,33 @@ def nota_texto():
         elif g_check2 == 1 and g_check3 == 1 and g_check4 == 1 and g_check5 == 1:
             word_nota = g_nota +'Laboratorios:'+g_serieroja+g_serieblanca+g_quimica+g_otro+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
     f.write(word_nota)
-    f.close()  
+    f.close()
+    # se abre la base de datos para crear la nota de exploracion fisica del paciente
+    conexion = sqlite3.connect('notas.db')
+    cursor = conexion.cursor()
+    cursor.execute ("SELECT id FROM paciente WHERE apellido_p = ? AND apellido_m = ? AND nombre = ?", (var_paterno.get(), var_materno.get(), var_nombre.get()))
+    prueba=cursor.fetchall()[0]
+    conexion.commit()
+    lista_id = []
+    for m in prueba:
+        lista_id.append(m)
+    
+    peso=var_kg.get()
+    tension=var_tension.get()
+    frecuencaf=var_fc.get()
+    frecuenciar=var_fr.get()
+    temp=var_temp.get()
+    saturacion=var_sat.get()
+    pad=var_actual.get()
+    exploracion=g_ef
+    analisi=var_analisis.get()
+    man=var_manejo.get()
+    ident=var_diagnostico.get()
+    print(lista_id[0])
+    cursor.execute("""INSERT INTO consulta (fecha,peso,ta,fc,fr,temp,s02,pa,ef,analisis,manejo,diagnostico,foreign_p) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)""",(fecha,peso,tension,frecuencaf,frecuenciar,temp,saturacion,pad,exploracion,analisi,man,ident,lista_id[0]))
+    conexion.commit()
+    conexion.close()
+    
 def n_limpiar():
     conexion = sqlite3.connect('notas.db')
     cursor = conexion.cursor()
@@ -473,6 +779,7 @@ def n_limpiar():
     analisis.delete("0",'end')
     manejo.delete("0",'end')
     svt.delete('0','end')
+    kg.delete('0','end')
     fc.delete('0','end')
     fr.delete('0','end')
     tc.delete('0','end')
@@ -527,18 +834,58 @@ def n_limpiar():
     diagnostico.delete("0","end")
     #medname.delete("0","end")
     media.delete("0","end")
+    media.insert('end',"0")
     medmg.delete("0","end")
     medml.delete("0","end")
     dosis.delete("0","end")
     dia_med.delete("0","end")
-    ven.update()
-    ven.update_idletasks()
 
-    
+def pres_a(event):
+    conexion = sqlite3.connect('notas.db')
+    cursor = conexion.cursor()
+    var0=sexo_eleccion.get()
+    var1=var_paterno.get()
+    var2=var_materno.get()
+    var3=var_nombre.get()
+    var4=f_dia.get()
+    var5=f_mes.get()
+    var6=f_ano.get()
+    var7=var_edad.get()
+    var8=var_calle.get()
+    var9=var_colonia.get()
+    var10=var_numero.get()
+    var11=var_postal.get()
+    var12=var_telefono.get()
+    var13=var_alergias.get()
+    var14=var_enfermedades.get()
+    var15=var_hospitalizacion.get()
+    var16=var_cirugias.get()
+    var17=var_traumatismos.get()
+    var18=var_transfusiones.get()
+    var19=var_etilismo.get()
+    var20=var_tabaco.get()
+    var21=var_toxicomania.get()
+    var22=var_otros.get()
+    var23=var_menarca.get()
+    var24=var_ivsa.get()
+    var25=var_npsa.get()
+    var26=var_gesta.get()
+    var27=var_parto.get()
+    var28=var_cesarea.get()
+    var29=var_aborto.get()
+    var30=var_citologia.get()
+    var31=var_media.get()
+    var32=dia_cb.get()
+    var33=mes_cb.get()
+    var34=var_menstruacion.get()
+    var35=var_sdg.get()
+    var36=var_usg.get()
+    var37=combo_seguro.get()
+    cursor.execute("""INSERT INTO paciente (sexo, apellido_p, apellido_m, nombre, f_dia, f_mes, f_ano, edad, calle,colonia, numero, cp, telefono,alergias,enfermedades,hospitalizaciones,cirugias,traumatismos,transfusiones,etilismo,tabaquismo,toxicomanias,otros,menarca,ivsa,npsa,gestas,partos,cesareas,abortos,citologias,m_dia,m_mes,m_ano,sdg,sdu,seguros,fecha) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",(var0,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,var11,var12,var13,var14,var15,var16,var17,var18,var19,var20,var21,var22,var23,var24,var25,var26,var27,var28,var29,var30,var31,var32,var33,var34,var35,var37,fecha))
+    '''ssss'''
+    conexion.commit()
+    conexion.close()   
 
-def calculo_fum():
-    
-    pass
 def cargar_med():
     lista = []
     conexion = sqlite3.connect('notas.db')
@@ -592,29 +939,6 @@ def receta():
             manejo.insert('end', medicamento + ' '+str(var_medmg.get())+' mg /' + str(var_medml.get())+ ' ml '+' tomar  '+str(a)+ ' ml cada '+horas+ ' por ' + str(dias)+' días. ')
             print(a)
 
- 
-
-'''
-def busqueda():
-    top = tk.Toplevel(ven)
-    top.title("Buscar paciente")
-    ttk.Label(top, text="Apellido paterno").grid(column=0, row=0)
-    pat = ttk.Entry(top, width="20", textvariable=var_pat)
-    pat.grid(column=1, row=0,padx=2, pady=4) # crea la caja de texto para escribir la nota
-    
-    ttk.Label(top, text="Apellido materno").grid(column=2, row=0)
-    mat = ttk.Entry(top, width="20", textvariable=var_mat)
-    mat.grid(column=3, row=0,padx=2, pady=4) # crea la caja de texto para escribir la nota
-    
-    tk.Label(top, text="Nombre").grid(column=4, row=0)
-    var_name = tk.StringVar() #crea la variable que asignara el valor de la nota
-    nombre = ttk.Entry(top, width="20", textvariable=var_name)
-    nombre.grid(column=5, row=0,padx=2, pady=4) # crea la caja de texto para escribir la nota
-   
-    button_busqueda=ttk.Button(top, text="buscar", command=buscar)
-    button_busqueda.grid(column=0, row=1, padx=2)
-'''
-    
 def info():
     tk.messagebox.showinfo('Acerca de','Version: 07.11.23A\n Creador: Med.Luna Medico Familiar.\n apuntesmf.com')
     
@@ -631,14 +955,21 @@ ven.config(menu=menu_bar)
 
 file_menu = Menu(menu_bar, tearoff=0)
 base_menu = Menu(menu_bar, tearoff=0)
+gab_menu = Menu(menu_bar, tearoff=0)
 menu_bar.add_cascade(label="Archivo", menu=file_menu)
 file_menu.add_command(label='Acerca de', command=info)
+
 menu_bar.add_cascade(label="Base de datos", menu=base_menu)
 base_menu.add_command(label='Guardar paciente', command=paciente)
-base_menu.add_command(label='Buscar paciente',state=tk.DISABLED)
-base_menu.add_command(label='Actualizar base de datos', command=actualizar)
+base_menu.add_command(label='Buscar paciente', command=buscar)
+
 base_menu.add_command(label='Agregar enfermedad a base de datos', command=n_enfermedad)
+base_menu.add_command(label='Actualizar enfermedad', command=actualizar)
 base_menu.add_command(label='Agregar medicamento', command=n_medicamento)
+
+menu_bar.add_cascade(label="Gabinete", menu=gab_menu)
+gab_menu.add_command(label='Laboratorios', command=lab)
+
 
 #tabs
 tabs = ttk.Notebook(ven)
@@ -690,7 +1021,7 @@ sexo_eleccion = ttk.Combobox(frame_datospers, width=12, textvariable=sexo)
 sexo_eleccion["values"] = ("Masculino", "Femenino")
 sexo_eleccion.grid(column=1, row=0)
 sexo_eleccion.current(0)
-button_s=ttk.Button(frame_datospers, text="buscar", )
+button_s=ttk.Button(frame_datospers, text="buscar",command=buscar_paciente )
 button_s.grid(column=2, row=0, padx=2)
 
 
@@ -973,7 +1304,7 @@ combo = ttk.Combobox(
 combo.grid(column=0,row=1)
 
 boton = ttk.Button(frame_enfermedad, text='seleccionar', command=seleccionar)
-boton.grid(column=3,row=0)
+boton.grid(column=3,row=1)
 
 ########################################################
 #APARTADO DE LA EXPLORACION
@@ -1027,8 +1358,6 @@ ttk.Label(frame_exploracion, text="Extremidades").grid(column=0,row=7, padx=2, p
 var_extremidades = tk.StringVar()
 extremidades = ttk.Entry(frame_exploracion, width="90", textvariable=var_extremidades)
 extremidades.grid(column=1,row=7, padx=2, pady=4)
-
-
 
 ######################
 #laboratorio
@@ -1248,7 +1577,6 @@ var_labotro=tk.StringVar()
 otroslab= ttk.Entry(frame_laboratorio, width="20", textvariable=var_labotro)
 otroslab.grid(column=1, row=15)
 
-
 ########################
 #ANALISIS Y MANEJO
 ############################
@@ -1283,9 +1611,6 @@ diagnostico.grid(column=1, row=0, padx=2, pady=4)
 frame_med = ttk.LabelFrame(tab4, text="Medicamentos")
 frame_med.grid(column=0, row=0, padx=2, pady=4)
 
-
-boton = ttk.Button(frame_enfermedad, text='seleccionar', command=seleccionar)
-boton.grid(column=3,row=0)
 #combobox para seleccionar medicamentos
 ttk.Label(frame_med,text='Medicamento').grid(column=0, row=0, padx=2, pady=4)
 combomed = ttk.Combobox(
@@ -1342,7 +1667,7 @@ g_nota = ScrolledText(frame_nota, font=("Arial", 12),width="60", height="30")
 g_nota.grid(column=0, row=0, padx=2)
 
 frame_opciones = ttk.LabelFrame(tab5, text="Opciones")#Genera el frame para los botones de opciones para generar notas o almacenar en base de datos y formato de texto
-frame_opciones.grid(column=1, row=0, padx=2)
+frame_opciones.grid(column=0, row=1, padx=2)
 
 generar_inicial = ttk.Button(frame_opciones, text="Generar historia clinica", command=gen_historia)
 generar_inicial.grid(column=0, row=0, padx=2)
@@ -1371,4 +1696,5 @@ cargar_medicina.grid(column=2, row=0, padx=2)
 #========================
 #   INICIA LA VENTANA
 #========================
+ven.bind("<Control-g>",pres_a)
 ven.mainloop()
