@@ -1,12 +1,12 @@
 import sqlite3
 import datetime
+import csv
 import tkinter as tk
-from tkinter import VERTICAL, Y, DoubleVar, Scrollbar, ttk, scrolledtext, Menu
+from tkinter import  ttk, Menu
 from tkinter import messagebox as msg
 from tkinter.scrolledtext import ScrolledText
 from tkinter import Menu
-from decimal import *
-
+from decimal import Decimal
 
 ven = tk.Tk()
 ven.title("pacientes")
@@ -15,8 +15,11 @@ ven.minsize(870,700)
 '''
 VARIABLES GLOBALES
 '''
+nombre_archivo = 'listado.csv'
 fecha = datetime.datetime.now()
 fecha=str(fecha.strftime("%x"))
+print(fecha)
+px=[]
 var_pat = tk.StringVar() #crea la variable que asignara el valor de la nota
 var_mat = tk.StringVar() #crea la variable que asignara el valor de la nota
 var_name = tk.StringVar() #crea la variable que asignara el valor de la nota
@@ -43,9 +46,12 @@ cursor.execute("SELECT nombre FROM seguros ")
 seguro=[]
 for x in cursor:
     seguro.append(x)
+
 conexion.close()
 
+
 #Funciones de base de datos
+
 def seleccionar():
     var1 =combo.get()
     conexion = sqlite3.connect('notas.db')
@@ -94,7 +100,7 @@ def seleccionar():
 def n_enfermedad():
     conexion = sqlite3.connect('notas.db')
     cursor = conexion.cursor()
-    var1=var_enfermedad.get()
+    var1=var_diagnostico.get()
     var2=var_neuro.get()
     var3=var_piel.get()
     var4=var_cabeza.get()
@@ -142,7 +148,7 @@ def n_medicamento():
     mg2 = ttk.Entry(topmed, width="20", textvariable=var_mg2)
     mg2.grid(column=5, row=0,padx=2, pady=4)
     
-    tk.Label(topmed, text="Nombre").grid(column=6, row=0)
+    tk.Label(topmed, text="ml").grid(column=6, row=0)
     
     ml = ttk.Entry(topmed, width="20", textvariable=var_ml)
     ml.grid(column=7, row=0,padx=2, pady=4) # crea la caja de texto para escribir la nota
@@ -366,8 +372,15 @@ def lab():
     var_labotro=tk.StringVar()
     otroslab= ttk.Entry(frame_laboratorio, width="20", textvariable=var_labotro)
     otroslab.grid(column=1, row=15)
-    
-
+def excel():
+    conexion = sqlite3.connect('notas.db')
+    cursor = conexion.cursor() 
+    cursor.execute("SELECT p.apellido_p, p.apellido_m, p.nombre, p.seguros, p.fecha FROM paciente p")
+    resultado = cursor.fetchall()
+    headers = [i[0] for i in cursor.description]
+    csvfile = csv.writer(open(nombre_archivo, 'w', newline=''), delimiter=',', lineterminator='\r\n',quoting=csv.QUOTE_ALL, escapechar='\\')
+    csvfile.writerow(headers)
+    csvfile.writerows(resultado)
 
 def cargar():
     var1=var_sal.get()
@@ -381,6 +394,7 @@ def cargar():
     conexion.close()
 def paciente():
     fecha = datetime.datetime.now()
+    fecha=str(fecha.strftime("%x"))
     conexion = sqlite3.connect('notas.db')
     cursor = conexion.cursor()
     var0=sexo_eleccion.get()
@@ -421,34 +435,21 @@ def paciente():
     var35=var_sdg.get()
     var36=var_usg.get()
     var37=combo_seguro.get()
-    cursor.execute("""INSERT INTO paciente (sexo, apellido_p, apellido_m, nombre, f_dia, f_mes, f_ano, edad, calle,colonia, numero, cp, telefono,alergias,enfermedades,hospitalizaciones,cirugias,traumatismos,transfusiones,etilismo,tabaquismo,toxicomanias,otros,menarca,ivsa,npsa,gestas,partos,cesareas,abortos,citologias,m_dia,m_mes,m_ano,sdg,sdu,seguros,fecha) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",(var0,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,var11,var12,var13,var14,var15,var16,var17,var18,var19,var20,var21,var22,var23,var24,var25,var26,var27,var28,var29,var30,var31,var32,var33,var34,var35,var37,fecha))
-    '''ssss'''
+    
+    cursor.execute("SELECT apellido_p AND apellido_m AND nombre FROM paciente WHERE apellido_p = ? AND apellido_m = ? AND nombre = ?", (var1, var2, var3))
+    busqueda = cursor.fetchone()
     conexion.commit()
-    conexion.close()
-    tk.messagebox.showinfo('Paciente','Paciente almacenado')
-def buscar():
-    top = tk.Toplevel(ven)
-    top.title("Buscar paciente")
-
-    ttk.Label(top,text="Apellido Paterno").grid(column=0, row=0)
-    b_paterno = tk.StringVar() #crea la variable que asignara el valor de la nota
-    paterno = ttk.Entry(top,width="20", textvariable=b_paterno)
-    paterno.grid(column=1, row=0)
-
-    ttk.Label(top,text="Apellido Materno").grid(column=2, row=0)
-    b_materno = tk.StringVar() #crea la variable que asignara el valor de la nota
-    materno = ttk.Entry(top,width="20", textvariable=b_materno)
-    materno.grid(column=3, row=0)
-
-    ttk.Label(top, text="Nombres").grid(column=4, row=0)
-    b_nombre = tk.StringVar() #crea la variable que asignara el valor de la nota
-    nombre = ttk.Entry(top, width="20", textvariable=b_nombre)
-    nombre.grid(column=5, row=0,padx=2, pady=4)
-
-    btn=ttk.Button(top,text="buscar pacientes", command=buscar_paciente)
-    btn.grid(column=6, row=0)
+    if busqueda is not None:
+        conexion.close()
+        tk.messagebox.showinfo('Paciente','Paciente ya existe en la base de datos')
+    else:
+        cursor.execute("""INSERT INTO paciente  (sexo, apellido_p, apellido_m, nombre, f_dia, f_mes, f_ano, edad, calle,colonia, numero, cp, telefono,alergias,enfermedades,hospitalizaciones,cirugias,traumatismos,transfusiones,etilismo,tabaquismo,toxicomanias,otros,menarca,ivsa,npsa,gestas,partos,cesareas,abortos,citologias,m_dia,m_mes,m_ano,sdg,sdu,seguros,fecha) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",(var0,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,var11,var12,var13,var14,var15,var16,var17,var18,var19,var20,var21,var22,var23,var24,var25,var26,var27,var28,var29,var30,var31,var32,var33,var34,var35,var37,fecha))
+        conexion.commit()
+        conexion.close()
+        tk.messagebox.showinfo('Paciente','Paciente almacenado')
 
 def buscar_paciente():
+    px=[]
     lista=[]
     var1= var_paterno.get()
     var2= var_materno.get()
@@ -457,12 +458,18 @@ def buscar_paciente():
     cursor = conexion.cursor()
     cursor.execute ("SELECT * FROM paciente WHERE apellido_p = ? AND apellido_m = ? AND nombre = ?", (var1, var2, var3))
     prueba = cursor.fetchall()[0]
-    print(prueba)
     conexion.commit()
     for x in prueba:
         lista.append(x)
+
+    cursor.execute("SELECT fecha FROM paciente WHERE apellido_p = ? AND apellido_m = ? AND nombre = ?", (var1, var2, var3))
+    prueba = cursor.fetchall()[0]
+    conexion.commit()
+    for x in prueba:
+        px.append(x)
     conexion.close()
-   
+    print(px)
+    lista_fecha.insert(0,*px)
     sexo_eleccion.insert("0",lista[1])
     f_dia.insert("0",lista[5])
     f_mes.insert("0",lista[6])
@@ -496,9 +503,66 @@ def buscar_paciente():
     ano_cb.insert("0",lista[34])
     sdg.insert("0",lista[35])
     usg.insert("0",lista[36])
-        
 
-
+def cargar_fecha(event):
+    var1= var_paterno.get()
+    var2= var_materno.get()
+    var3 = var_nombre.get()
+    conexion = sqlite3.connect('notas.db')
+    cursor = conexion.cursor()
+    cursor.execute ("SELECT id FROM paciente WHERE apellido_p = ? AND apellido_m = ? AND nombre = ?", (var1, var2, var3))
+    id = cursor.fetchall()[0]
+    conexion.commit()
+    cursor.execute("SELECT * FROM consulta WHERE  foreign_p=?", (id))
+    resultado = cursor.fetchall()[0]
+    conexion.commit()
+    print(resultado)
+    g_nota.insert("end",str(resultado[1]) + "\npeso: " + str(resultado[2]) + "\nTa: "+str(resultado[3]) + "\nFc: " + str(resultado[4]) + "\nFr: " +str(resultado[5]) + "\nTemp: " +str(resultado[6]) + "\nS02: " +str(resultado[7])+ "\n\nPa: " +str(resultado[8])+ "\n\nEf: " +str(resultado[9])+ "\n\nanalisis: " +str(resultado[10])+ "\n\nManejo: " +str(resultado[11])+ "\n\nDiagnostico: " +str(resultado[12]))
+def actualizar_paciente():
+    conexion = sqlite3.connect('notas.db')
+    cursor = conexion.cursor()
+    var0=sexo_eleccion.get()
+    var1=var_paterno.get()
+    var2=var_materno.get()
+    var3=var_nombre.get()
+    var4=f_dia.get()
+    var5=f_mes.get()
+    var6=f_ano.get()
+    var7=var_edad.get()
+    var8=var_calle.get()
+    var9=var_colonia.get()
+    var10=var_numero.get()
+    var11=var_postal.get()
+    var12=var_telefono.get()
+    var13=var_alergias.get()
+    var14=var_enfermedades.get()
+    var15=var_hospitalizacion.get()
+    var16=var_cirugias.get()
+    var17=var_traumatismos.get()
+    var18=var_transfusiones.get()
+    var19=var_etilismo.get()
+    var20=var_tabaco.get()
+    var21=var_toxicomania.get()
+    var22=var_otros.get()
+    var23=var_menarca.get()
+    var24=var_ivsa.get()
+    var25=var_npsa.get()
+    var26=var_gesta.get()
+    var27=var_parto.get()
+    var28=var_cesarea.get()
+    var29=var_aborto.get()
+    var30=var_citologia.get()
+    var31=var_media.get()
+    var32=dia_cb.get()
+    var33=mes_cb.get()
+    var34=var_menstruacion.get()
+    var35=var_sdg.get()
+    var36=var_usg.get()
+    var37=combo_seguro.get()
+    cursor.execute("""UPDATE paciente SET sexo=?, apellido_p=?, apellido_m=?, nombre=?, f_dia=?, f_mes=?, f_ano=?, edad=?, calle=?,colonia=?, numero=?, cp=?, telefono=?,alergias=?,enfermedades=?,hospitalizaciones=?,cirugias=?,traumatismos=?,transfusiones=?,etilismo=?,tabaquismo=?,toxicomanias=?,otros=?,menarca=?,ivsa=?,npsa=?,gestas=?,partos=?,cesareas=?,abortos=?,citologias=?,m_dia=?,m_mes=?,m_ano=?,sdg=?,sdu=?,seguros=?,fecha=? WHERE apellido_p=? AND apellido_m=? AND nombre=?""",(var0,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,var11,var12,var13,var14,var15,var16,var17,var18,var19,var20,var21,var22,var23,var24,var25,var26,var27,var28,var29,var30,var32,var33,var34,var35,var36,var37,fecha,var1,var2,var3))
+    conexion.commit()
+    tk.messagebox.showinfo('Paciente','Paciente actualizado')
+    conexion.close()
 
 # Funciones de nota medica
 def evo():
@@ -653,75 +717,76 @@ def nota_texto():
     g_analisis = var_analisis.get()
     g_diagnostico = var_diagnostico.get()
     manejo = var_manejo.get()
-    f = open(g_nombre+".txt","x")
-    
-    if sexo_eleccion.get() == "Femenino":
-        if g_check == 1:
-            if g_check2 == 0 and g_check3 == 0 and g_check4 == 0 and g_check5 == 0:
-                word_nota = g_notafem +'\n' + g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
-            elif g_check2 == 1 and g_check3 == 0 and g_check4 == 0 and g_check5 == 0:
-                word_nota = g_notafem+'Laboratorios:'+g_serieroja+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
-            elif g_check2 == 0 and g_check3 == 1 and g_check4 == 0 and g_check5 == 0:
-                word_nota = g_notafem +'Laboratorios:'+g_serieblanca+'\n\n'+ g_analisis + '\n\n' + +g_diagnostico + '\n\n' + manejo
-            elif g_check2 == 0 and g_check3 == 0 and g_check4 == 1 and g_check5 == 0:
-                word_nota = g_notafem +'Laboratorios:'+g_quimica+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
-            elif g_check2 == 0 and g_check3 == 0 and g_check4 == 0 and g_check5 == 1:
-                word_nota = g_notafem +'Laboratorios:'+g_otro+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
-            elif g_check2 == 1 and g_check3 == 1 and g_check4 == 1 and g_check5 == 1:
-                word_nota = g_notafem +'Laboratorios:'+g_serieroja+g_serieblanca+g_quimica+g_otro+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+    try:
+        f = open("notas/"+g_nombre+".txt","x")
+        
+        if sexo_eleccion.get() == "Femenino":
+            if g_check == 1:
+                if g_check2 == 0 and g_check3 == 0 and g_check4 == 0 and g_check5 == 0:
+                    word_nota = g_notafem +'\n' + g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+                elif g_check2 == 1 and g_check3 == 0 and g_check4 == 0 and g_check5 == 0:
+                    word_nota = g_notafem+'Laboratorios:'+g_serieroja+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+                elif g_check2 == 0 and g_check3 == 1 and g_check4 == 0 and g_check5 == 0:
+                    word_nota = g_notafem +'Laboratorios:'+g_serieblanca+'\n\n'+ g_analisis + '\n\n' + +g_diagnostico + '\n\n' + manejo
+                elif g_check2 == 0 and g_check3 == 0 and g_check4 == 1 and g_check5 == 0:
+                    word_nota = g_notafem +'Laboratorios:'+g_quimica+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+                elif g_check2 == 0 and g_check3 == 0 and g_check4 == 0 and g_check5 == 1:
+                    word_nota = g_notafem +'Laboratorios:'+g_otro+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+                elif g_check2 == 1 and g_check3 == 1 and g_check4 == 1 and g_check5 == 1:
+                    word_nota = g_notafem +'Laboratorios:'+g_serieroja+g_serieblanca+g_quimica+g_otro+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+            else:
+                if g_check2 == 0 and g_check3 == 0 and g_check4 == 0 and g_check5 == 0:
+                    word_nota = g_notafem +'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+                elif g_check2 == 1 and g_check3 == 0 and g_check4 == 0 and g_check5 == 0:
+                    word_nota = g_notafem +'Laboratorios:'+g_serieroja+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+                elif g_check2 == 0 and g_check3 == 1 and g_check4 == 0 and g_check5 == 0:
+                    word_nota = g_notafem +'Laboratorios:'+g_serieblanca+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+                elif g_check2 == 0 and g_check3 == 0 and g_check4 == 1 and g_check5 == 0:
+                    word_nota = g_notafem +'Laboratorios:'+g_quimica+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+                elif g_check2 == 0 and g_check3 == 0 and g_check4 == 0 and g_check5 == 1:
+                    word_nota = g_notafem +'Laboratorios:'+g_otro+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+                elif g_check2 == 1 and g_check3 == 1 and g_check4 == 1 and g_check5 == 1:
+                    word_nota = g_notafem +'Laboratorios:'+g_serieroja+g_serieblanca+g_quimica+g_otro+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
         else:
             if g_check2 == 0 and g_check3 == 0 and g_check4 == 0 and g_check5 == 0:
-                word_nota = g_notafem +'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+                word_nota = g_nota + g_analisis + '\n\n' +g_diagnostico + '\n\n' + manejo
             elif g_check2 == 1 and g_check3 == 0 and g_check4 == 0 and g_check5 == 0:
-                word_nota = g_notafem +'Laboratorios:'+g_serieroja+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+                word_nota = g_nota +'Laboratorios:'+g_serieroja+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
             elif g_check2 == 0 and g_check3 == 1 and g_check4 == 0 and g_check5 == 0:
-                word_nota = g_notafem +'Laboratorios:'+g_serieblanca+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+                word_nota =g_nota +'Laboratorios:'+g_serieblanca+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
             elif g_check2 == 0 and g_check3 == 0 and g_check4 == 1 and g_check5 == 0:
-                word_nota = g_notafem +'Laboratorios:'+g_quimica+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+                word_nota = g_nota +'Laboratorios:'+g_quimica+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
             elif g_check2 == 0 and g_check3 == 0 and g_check4 == 0 and g_check5 == 1:
-                word_nota = g_notafem +'Laboratorios:'+g_otro+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+                word_nota =g_nota +'Laboratorios:'+g_otro+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
             elif g_check2 == 1 and g_check3 == 1 and g_check4 == 1 and g_check5 == 1:
-                word_nota = g_notafem +'Laboratorios:'+g_serieroja+g_serieblanca+g_quimica+g_otro+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
-    else:
-        if g_check2 == 0 and g_check3 == 0 and g_check4 == 0 and g_check5 == 0:
-            word_nota = g_nota + g_analisis + '\n\n' +g_diagnostico + '\n\n' + manejo
-        elif g_check2 == 1 and g_check3 == 0 and g_check4 == 0 and g_check5 == 0:
-            word_nota = g_nota +'Laboratorios:'+g_serieroja+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
-        elif g_check2 == 0 and g_check3 == 1 and g_check4 == 0 and g_check5 == 0:
-            word_nota =g_nota +'Laboratorios:'+g_serieblanca+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
-        elif g_check2 == 0 and g_check3 == 0 and g_check4 == 1 and g_check5 == 0:
-            word_nota = g_nota +'Laboratorios:'+g_quimica+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
-        elif g_check2 == 0 and g_check3 == 0 and g_check4 == 0 and g_check5 == 1:
-            word_nota =g_nota +'Laboratorios:'+g_otro+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
-        elif g_check2 == 1 and g_check3 == 1 and g_check4 == 1 and g_check5 == 1:
-            word_nota = g_nota +'Laboratorios:'+g_serieroja+g_serieblanca+g_quimica+g_otro+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
-    f.write(word_nota)
-    f.close()
-    # se abre la base de datos para crear la nota de exploracion fisica del paciente
-    conexion = sqlite3.connect('notas.db')
-    cursor = conexion.cursor()
-    cursor.execute ("SELECT id FROM paciente WHERE apellido_p = ? AND apellido_m = ? AND nombre = ?", (var_paterno.get(), var_materno.get(), var_nombre.get()))
-    prueba=cursor.fetchall()[0]
-    conexion.commit()
-    lista_id = []
-    for m in prueba:
-        lista_id.append(m)
-    
-    peso=var_kg.get()
-    tension=var_tension.get()
-    frecuencaf=var_fc.get()
-    frecuenciar=var_fr.get()
-    temp=var_temp.get()
-    saturacion=var_sat.get()
-    pad=var_actual.get()
-    exploracion=g_ef
-    analisi=var_analisis.get()
-    man=var_manejo.get()
-    ident=var_diagnostico.get()
-    print(lista_id[0])
-    cursor.execute("""INSERT INTO consulta (fecha,peso,ta,fc,fr,temp,s02,pa,ef,analisis,manejo,diagnostico,foreign_p) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)""",(fecha,peso,tension,frecuencaf,frecuenciar,temp,saturacion,pad,exploracion,analisi,man,ident,lista_id[0]))
-    conexion.commit()
-    conexion.close()
+                word_nota = g_nota +'Laboratorios:'+g_serieroja+g_serieblanca+g_quimica+g_otro+'\n\n'+ g_analisis + '\n\n' + g_diagnostico + '\n\n' + manejo
+        f.write(word_nota)
+        f.close()
+    finally:
+        # se abre la base de datos para crear la nota de exploracion fisica del paciente
+        conexion = sqlite3.connect('notas.db')
+        cursor = conexion.cursor()
+        cursor.execute ("SELECT id FROM paciente WHERE apellido_p = ? AND apellido_m = ? AND nombre = ?", (var_paterno.get(), var_materno.get(), var_nombre.get()))
+        prueba=cursor.fetchall()[0]
+        conexion.commit()
+        lista_id = []
+        for m in prueba:
+            lista_id.append(m)
+        peso=var_kg.get()
+        tension=var_tension.get()
+        frecuencaf=var_fc.get()
+        frecuenciar=var_fr.get()
+        temp=var_temp.get()
+        saturacion=var_sat.get()
+        pad=var_actual.get()
+        exploracion=g_ef
+        analisi=var_analisis.get()
+        man=var_manejo.get()
+        ident=var_diagnostico.get()
+        print(lista_id[0])
+        cursor.execute("""INSERT INTO consulta (fecha,peso,ta,fc,fr,temp,s02,pa,ef,analisis,manejo,diagnostico,foreign_p) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)""",(fecha,peso,tension,frecuencaf,frecuenciar,temp,saturacion,pad,exploracion,analisi,man,ident,lista_id[0]))
+        conexion.commit()
+        conexion.close()
     
 def n_limpiar():
     conexion = sqlite3.connect('notas.db')
@@ -881,7 +946,7 @@ def pres_a(event):
     var35=var_sdg.get()
     var36=var_usg.get()
     var37=combo_seguro.get()
-    cursor.execute("""INSERT INTO paciente (sexo, apellido_p, apellido_m, nombre, f_dia, f_mes, f_ano, edad, calle,colonia, numero, cp, telefono,alergias,enfermedades,hospitalizaciones,cirugias,traumatismos,transfusiones,etilismo,tabaquismo,toxicomanias,otros,menarca,ivsa,npsa,gestas,partos,cesareas,abortos,citologias,m_dia,m_mes,m_ano,sdg,sdu,seguros,fecha) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",(var0,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,var11,var12,var13,var14,var15,var16,var17,var18,var19,var20,var21,var22,var23,var24,var25,var26,var27,var28,var29,var30,var31,var32,var33,var34,var35,var37,fecha))
+    cursor.execute("""INSERT INTO paciente (sexo, apellido_p, apellido_m, nombre, f_dia, f_mes, f_ano, edad, calle,colonia, numero, cp, telefono,alergias,enfermedades,hospitalizaciones,cirugias,traumatismos,transfusiones,etilismo,tabaquismo,toxicomanias,otros,menarca,ivsa,npsa,gestas,partos,cesareas,abortos,citologias,m_dia,m_mes,m_ano,sdg,sdu,seguros,fecha) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",(var0,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,var11,var12,var13,var14,var15,var16,var17,var18,var19,var20,var21,var22,var23,var24,var25,var26,var27,var28,var29,var30,var32,var33,var34,var35,var37,fecha))
     '''ssss'''
     conexion.commit()
     conexion.close()   
@@ -908,39 +973,40 @@ def cargar_med():
     
 def receta():
     horas = dia_med.get() 
-    dosis=var_dosis.get()
-    peso=var_kg.get()
+    dosis=Decimal(var_dosis.get())
+    peso=Decimal(var_kg.get())
+    mg=Decimal(var_medmg.get())
+    ml=Decimal(var_medml.get())
     check = check_med.get()
     medicamento = combomed.get()
     dias=var_media.get()
     if check == 1:
-        var1=(peso*dosis)*var_medml.get()
-        var2=var1/var_medmg.get()
-        manejo.insert('end', medicamento + ' '+str(var_medmg.get())+' mg/' + str(var_medml.get())+ ' ml '+ 'tomar  '+str(var2)+ ' ml cada '+horas+ ' por ' + str(dias)+' días. ')
+        resultado = round((peso * dosis * ml) / mg, 1)
+        print('corrio')
+        print(resultado)
+        manejo.insert('end', medicamento + ' '+str(var_medmg.get())+' mg/' + str(var_medml.get())+ ' ml '+ 'tomar  '+ str(resultado)+ ' ml cada '+horas+ ' por ' + str(dias)+' días. ')
     else:
         if horas == "6":
-            a = ((dosis*peso*var_medml.get())/var_medmg.get())/4
-            a = float(a)
+            a = round(((dosis*peso*ml)/mg)/4, 1)
+            
             manejo.insert('end', medicamento + ' '+str(var_medmg.get())+' mg/' + str(var_medml.get())+ ' ml '+' tomar  '+str(a)+ ' ml cada '+horas+ ' por ' + str(dias)+' días. ' )
             print(a)
         elif horas == "8":
-            a = ((dosis*peso*var_medml.get())/var_medmg.get())/3
-            a = float(a)
+            a = round(((dosis*peso*ml)/mg)/3,1)
+            
             manejo.insert('end', medicamento + ' '+str(var_medmg.get())+' mg/' + str(var_medml.get())+ ' ml '+' tomar  '+str(a)+ ' ml cada '+horas+ ' por ' + str(dias)+' días. ')
             print(a)
         elif horas == "12":
-            a = ((dosis*peso*var_medml.get())/var_medmg.get())/2
-            a = float(a)
+            a = round(((dosis*peso*ml)/mg)/2,1)
             manejo.insert('end', medicamento + ' '+str(var_medmg.get())+' mg/' + str(var_medml.get())+ ' ml '+' tomar  '+str(a)+ ' ml cada '+horas+ ' por ' + str(dias)+' días. ')
             print(a)
         else:
-            a = ((dosis*peso*var_medml.get())/var_medmg.get())
-            a = float(a)
+            a = round(((dosis*peso*ml)/mg),1)
             manejo.insert('end', medicamento + ' '+str(var_medmg.get())+' mg /' + str(var_medml.get())+ ' ml '+' tomar  '+str(a)+ ' ml cada '+horas+ ' por ' + str(dias)+' días. ')
             print(a)
 
 def info():
-    tk.messagebox.showinfo('Acerca de','Version: 07.11.23A\n Creador: Med.Luna Medico Familiar.\n apuntesmf.com')
+    tk.messagebox.showinfo('Acerca de','Version: 11.12.23A\n Autor: Med.Luna Medico Familiar.\n apuntesmf.com \n Contacto: drlunamf@hotmail.com')
     
 
 # ++++++++++++++++++++++++++++++++++++++
@@ -957,11 +1023,12 @@ file_menu = Menu(menu_bar, tearoff=0)
 base_menu = Menu(menu_bar, tearoff=0)
 gab_menu = Menu(menu_bar, tearoff=0)
 menu_bar.add_cascade(label="Archivo", menu=file_menu)
+file_menu.add_command(label='Guardar lista de pacientes', command=excel)
 file_menu.add_command(label='Acerca de', command=info)
 
 menu_bar.add_cascade(label="Base de datos", menu=base_menu)
 base_menu.add_command(label='Guardar paciente', command=paciente)
-base_menu.add_command(label='Buscar paciente', command=buscar)
+base_menu.add_command(label='Actualizar paciente', command=actualizar_paciente)
 
 base_menu.add_command(label='Agregar enfermedad a base de datos', command=n_enfermedad)
 base_menu.add_command(label='Actualizar enfermedad', command=actualizar)
@@ -1220,7 +1287,8 @@ mes_cb=ttk.Combobox(frame_gyo,values=["1","2","3","4","5","6","7","8","9","10","
 mes_cb.grid(column=3, row=4, padx=2, pady=4)
 ttk.Label(frame_gyo, text="Ano").grid(column=4, row=4, padx=2, pady=4)
 var_menstruacion = tk.StringVar() #crea la variable que asignara el valor de la nota
-ano_cb = ttk.Entry(frame_gyo, width="20", textvariable=var_menstruacion).grid(column=5, row=4)
+ano_cb = ttk.Entry(frame_gyo, width="20", textvariable=var_menstruacion)
+ano_cb.grid(column=5, row=4)
 
 #######################
 #Antecedentes embarazo
@@ -1666,6 +1734,13 @@ frame_nota.grid(column=0, row=0, pady=2, padx=2)
 g_nota = ScrolledText(frame_nota, font=("Arial", 12),width="60", height="30")
 g_nota.grid(column=0, row=0, padx=2)
 
+ttk.Label(frame_nota,text='fechas').grid(column=1, row=0, padx=2, pady=4)
+lista_fecha = tk.Listbox(
+        frame_nota,
+    )
+lista_fecha.grid(column=2, row=0, padx=2, pady=4)
+lista_fecha.bind('<<ListboxSelect>>',cargar_fecha)
+
 frame_opciones = ttk.LabelFrame(tab5, text="Opciones")#Genera el frame para los botones de opciones para generar notas o almacenar en base de datos y formato de texto
 frame_opciones.grid(column=0, row=1, padx=2)
 
@@ -1681,14 +1756,9 @@ guardar.grid(column=1, row=1, padx=2)
 nuevo = ttk.Button(frame_opciones, text="Limpiar", command=n_limpiar)
 nuevo.grid(column=0, row=1, padx=2)
 
-idxlbl = ttk.Label(frame_opciones, text='Nombre de la enfermedad')
-idxlbl.grid(column=1,row=2, padx=2)
-var_enfermedad=tk.StringVar()
-idx = ttk.Entry(frame_opciones, width="15", textvariable=var_enfermedad)
-idx.grid(column=0, row=2, padx=2)
-
 add_med = ttk.Button(frame_med, text="Agregar medicamento", command=receta)
 add_med.grid(column=0, row=6, padx=2)
+
 cargar_medicina = ttk.Button(frame_med, text="cargar datos", command=cargar_med)
 cargar_medicina.grid(column=2, row=0, padx=2)
 
