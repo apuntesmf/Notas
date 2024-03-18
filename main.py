@@ -4,7 +4,9 @@ import random
 import csv
 import os
 import tkinter as tk
-import mysql.connector
+import sqlite3
+import calculo
+from fpdf import FPDF
 from tkinter import  ttk, Menu
 from tkinter import messagebox as msg
 from tkinter.scrolledtext import ScrolledText
@@ -12,9 +14,10 @@ from tkinter import Menu
 from decimal import Decimal
 
 
+
 ven = tk.Tk()
 ven.title("pacientes")
-ven.geometry('870x800')    
+ven.geometry('870x870')    
 ven.minsize(870,700)
 '''
 VARIABLES GLOBALES
@@ -31,15 +34,22 @@ var_sal=tk.StringVar()
 var_mg=tk.StringVar()
 var_mg2=tk.StringVar()
 var_ml = tk.StringVar() #crea la variable que asignara el valor de la nota
-#conecta a la base de datos y crea el cursor 
-conexion = sqlite3.connect('notas.db')
-cursor = conexion.cursor()
+#conecta a la base de datos y crea el cursor
+
 
 #Genera la lista de enfermedades para elcombobox
+conexion = sqlite3.connect('notas.db')
+cursor = conexion.cursor()
 cursor.execute("SELECT enfermedad FROM enfermedades ")
 dc=[]
 for i in cursor:
     dc.append(i)
+
+md=[]
+cursor.execute("SELECT nombre FROM Medico ")
+for h in cursor:
+    md.append(h[0])
+
 
 cursor.execute("SELECT enfermedad FROM urgencias ")
 ux=[]
@@ -78,6 +88,7 @@ def a_enfermedad(txt_neuro2, piel2, cabeza2, cuello2, torax2,abdomen2,genitales2
         var10=manejo2
         cursor.execute("""UPDATE enfermedades SET neurologico=?,piel=?,cabeza=?,cuello=?,torax=?,abdomen=?,genitales=?,extremidades=?,analisis=?,manejo=? WHERE enfermedad = ?""", (var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,vardx))
         conexion.commit()
+        tk.messagebox.showinfo('Enfermedad','Enfermedad actualizada')
         conexion.close()
     else:
         vardx=seleccion
@@ -91,8 +102,9 @@ def a_enfermedad(txt_neuro2, piel2, cabeza2, cuello2, torax2,abdomen2,genitales2
         var8=extremidades2
         var9=analisis2
         var10=manejo2
-        cursor.execute("""UPDATE urgencias SET neurologico=?,piel=?,cabeza=?,cuello=?,torax=?,abdomen=?,genitales=?,extremidades=?,analisis=?,manejo=? WHERE enfermedad = ?""", (var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,vardx))
+        cursor.execute("""UPDATE urgencias SET neurologico=?,piel=?,cabeza=?,cuello=?,torax=?,abdomen=?,genitales=?,extremidades=?,analisis=?,manejo=? WHERE enfermedad = ?""", (vardx,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10))
         conexion.commit()
+        tk.messagebox.showinfo('Enfermedad','Enfermedad actualizada')
         conexion.close()
 def f_enfermedad(txt_neuro2, piel2, cabeza2, cuello2, torax2,abdomen2,genitales2,extremidades2,analisis2,manejo2,var_diagnostico2,consulta):
     conexion = sqlite3.connect('notas.db')
@@ -545,12 +557,15 @@ def lab():
     otroslab= ttk.Entry(frame_laboratorio, width="20", textvariable=var_labotro)
     otroslab.grid(column=1, row=15)
 def excel():
+    date=datetime.datetime
+    filename = f"date.strftime(%X)lista.csv"
+    
     conexion = sqlite3.connect('notas.db')
     cursor = conexion.cursor() 
     cursor.execute("SELECT p.apellido_p, p.apellido_m, p.nombre, p.seguros, p.fecha FROM paciente p")
     resultado = cursor.fetchall()
     headers = [i[0] for i in cursor.description]
-    csvfile = csv.writer(open(nombre_archivo, 'w', newline=''), delimiter=',', lineterminator='\r\n',quoting=csv.QUOTE_ALL, escapechar='\\')
+    csvfile = csv.writer(open(filename, 'w', newline=''), delimiter=',', lineterminator='\r\n',quoting=csv.QUOTE_ALL, escapechar='\\')
     csvfile.writerow(headers)
     csvfile.writerows(resultado)
 
@@ -603,10 +618,9 @@ def paciente():
     var31=dia_cb.get()
     var32=mes_cb.get()
     var33=ano_cb.get()
-    var34=var_menstruacion.get()
-    var35=var_sdg.get()
-    var36=var_usg.get()
-    var37=combo_seguro.get()
+    var34=var_sdg.get()
+    var35=var_usg.get()
+    var36=combo_seguro.get()
     
     cursor.execute("SELECT apellido_p AND apellido_m AND nombre FROM paciente WHERE apellido_p = ? AND apellido_m = ? AND nombre = ?", (var1, var2, var3))
     busqueda = cursor.fetchone()
@@ -616,7 +630,7 @@ def paciente():
         tk.messagebox.showinfo('Paciente','Paciente ya existe en la base de datos')
         conexion.close()
     else:
-        cursor.execute("""INSERT INTO paciente  (sexo, apellido_p, apellido_m, nombre, f_dia, f_mes, f_ano, edad, calle,colonia, numero, cp, telefono,alergias,enfermedades,hospitalizaciones,cirugias,traumatismos,transfusiones,etilismo,tabaquismo,toxicomanias,otros,menarca,ivsa,npsa,gestas,partos,cesareas,abortos,citologias,m_dia,m_mes,m_ano,sdg,sdu,seguros,fecha) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",(var0,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,var11,var12,var13,var14,var15,var16,var17,var18,var19,var20,var21,var22,var23,var24,var25,var26,var27,var28,var29,var30,var31,var32,var33,var34,var35,var37,fecha))
+        cursor.execute("""INSERT INTO paciente  (sexo, apellido_p, apellido_m, nombre, f_dia, f_mes, f_ano, edad, calle,colonia, numero, cp, telefono,alergias,enfermedades,hospitalizaciones,cirugias,traumatismos,transfusiones,etilismo,tabaquismo,toxicomanias,otros,menarca,ivsa,npsa,gestas,partos,cesareas,abortos,citologias,m_dia,m_mes,m_ano,sdg,sdu,seguros,fecha) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",(var0,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,var11,var12,var13,var14,var15,var16,var17,var18,var19,var20,var21,var22,var23,var24,var25,var26,var27,var28,var29,var30,var31,var32,var33,var34,var35,var36,fecha))
         conexion.commit()
         conexion.close()
         tk.messagebox.showinfo('Paciente','Paciente almacenado')
@@ -629,69 +643,74 @@ def buscar_paciente():
     var3 = var_nombre.get()
     conexion = sqlite3.connect('notas.db')
     cursor = conexion.cursor()
-    cursor.execute ("SELECT * FROM paciente WHERE apellido_p = ? AND apellido_m = ? AND nombre = ?", (var1, var2, var3))
-    prueba = cursor.fetchall()[0]
-    conexion.commit()
-    for x in prueba:
-        lista.append(x)
-    for x in prueba:
-        px.append(x)
-    conexion.close()
-    sexo_eleccion.delete("0",'end')
-    sexo_eleccion.insert("0",lista[1])
-    alergia.delete("0",'end') 
-    enfermedades.delete("0",'end') 
-    hospitalizacion.delete("0",'end')    
-    cirugia.delete("0",'end')    
-    traumatismo.delete("0",'end')   
-    transfusion.delete("0",'end')   
-    etilico.delete("0",'end')    
-    tabaco.delete("0",'end') 
-    toxicomania.delete("0",'end')   
-    otros.delete("0",'end')  
-    f_dia.insert("0",lista[5])
-    f_mes.insert("0",lista[6])
-    f_ano.insert("0",lista[7])
-    edad.insert("0",lista[8])
-    calle.insert("0",lista[9])
-    colonia.insert("0",lista[10])
-    numero.insert("0",lista[11])
-    postal.insert("0",lista[12])
-    telefono.insert("0",lista[13])
-    alergia.insert("0",lista[14])
-    enfermedades.insert("0",lista[15])
-    hospitalizacion.insert("0",lista[16])
-    cirugia.insert("0",lista[17])
-    traumatismo.insert("0",lista[18])
-    transfusion.insert("0",lista[19])
-    etilico.insert("0",lista[20])
-    tabaco.insert("0",lista[21])
-    toxicomania.insert("0",lista[22])
-    otros.insert("0",lista[23])
-    menarca.insert("0",lista[24])
-    ivsa.insert("0",lista[25])
-    npsa.insert("0",lista[26])
-    gesta.insert("0",lista[27])
-    parto.insert("0",lista[28])
-    cesarea.insert("0",lista[29])
-    aborto.insert("0",lista[30])
-    citologia.insert("0",lista[31])
-    dia_cb.insert("0",lista[32])
-    mes_cb.insert("0",lista[33])
-    ano_cb.insert("0",lista[34])
-    sdg.insert("0",lista[35])
-    usg.insert("0",lista[36])
-    conexion = sqlite3.connect('notas.db')
-    cursor = conexion.cursor()
-    cursor.execute ("SELECT id FROM paciente WHERE apellido_p = ? AND apellido_m = ? AND nombre = ?", (var1, var2, var3))
-    id = cursor.fetchall()[0]
-    conexion.commit()
-    cursor.execute("SELECT fecha FROM consulta WHERE  foreign_p=?", (id))
-    resultado = cursor.fetchall()
-    conexion.commit()
-    for each in resultado:
-        lista_fecha.insert(0,each)
-    conexion.close()
+    try:
+        cursor.execute ("SELECT * FROM paciente WHERE apellido_p = ? AND apellido_m = ? AND nombre = ?", (var1, var2, var3))
+        prueba = cursor.fetchall()[0]
+        conexion.commit()
+    except:
+        tk.messagebox.showinfo('Paciente','No se encontro paciente')
+    else:
+        for x in prueba:
+            lista.append(x)
+        for x in prueba:
+            px.append(x)
+        conexion.close()
+        sexo_eleccion.delete("0",'end')
+        sexo_eleccion.insert("0",lista[1])
+        alergia.delete("0",'end') 
+        enfermedades.delete("0",'end') 
+        hospitalizacion.delete("0",'end')    
+        cirugia.delete("0",'end')    
+        traumatismo.delete("0",'end')   
+        transfusion.delete("0",'end')   
+        etilico.delete("0",'end')    
+        tabaco.delete("0",'end') 
+        toxicomania.delete("0",'end')   
+        otros.delete("0",'end')  
+        f_dia.insert("0",lista[5])
+        f_mes.insert("0",lista[6])
+        f_ano.insert("0",lista[7])
+        edad.insert("0",lista[8])
+        calle.insert("0",lista[9])
+        colonia.insert("0",lista[10])
+        numero.insert("0",lista[11])
+        postal.insert("0",lista[12])
+        telefono.insert("0",lista[13])
+        alergia.insert("0",lista[14])
+        enfermedades.insert("0",lista[15])
+        hospitalizacion.insert("0",lista[16])
+        cirugia.insert("0",lista[17])
+        traumatismo.insert("0",lista[18])
+        transfusion.insert("0",lista[19])
+        etilico.insert("0",lista[20])
+        tabaco.insert("0",lista[21])
+        toxicomania.insert("0",lista[22])
+        otros.insert("0",lista[23])
+        menarca.insert("0",lista[24])
+        ivsa.insert("0",lista[25])
+        npsa.insert("0",lista[26])
+        gesta.insert("0",lista[27])
+        parto.insert("0",lista[28])
+        cesarea.insert("0",lista[29])
+        aborto.insert("0",lista[30])
+        citologia.insert("0",lista[31])
+        dia_cb.insert("0",lista[32])
+        mes_cb.insert("0",lista[33])
+        ano_cb.insert("0",lista[34])
+        sdg.insert("0",lista[35])
+        usg.insert("0",lista[36])
+        conexion = sqlite3.connect('notas.db')
+        cursor = conexion.cursor()
+        cursor.execute ("SELECT id FROM paciente WHERE apellido_p = ? AND apellido_m = ? AND nombre = ?", (var1, var2, var3))
+        id = cursor.fetchall()[0]
+        conexion.commit()
+        cursor.execute("SELECT fecha FROM consulta WHERE  foreign_p=?", (id))
+        resultado = cursor.fetchall()
+        conexion.commit()
+        for each in resultado:
+            lista_fecha.insert(0,each)
+        conexion.close()
+        
 
 def cargar_nota(event):
     lnota=[]
@@ -752,14 +771,13 @@ def actualizar_paciente():
     var28=var_cesarea.get()
     var29=var_aborto.get()
     var30=var_citologia.get()
-    var31=var_media.get()
-    var32=dia_cb.get()
-    var33=mes_cb.get()
-    var34=var_menstruacion.get()
-    var35=var_sdg.get()
-    var36=var_usg.get()
-    var37=combo_seguro.get()
-    cursor.execute("""UPDATE paciente SET sexo=?, apellido_p=?, apellido_m=?, nombre=?, f_dia=?, f_mes=?, f_ano=?, edad=?, calle=?,colonia=?, numero=?, cp=?, telefono=?,alergias=?,enfermedades=?,hospitalizaciones=?,cirugias=?,traumatismos=?,transfusiones=?,etilismo=?,tabaquismo=?,toxicomanias=?,otros=?,menarca=?,ivsa=?,npsa=?,gestas=?,partos=?,cesareas=?,abortos=?,citologias=?,m_dia=?,m_mes=?,m_ano=?,sdg=?,sdu=?,seguros=?,fecha=? WHERE apellido_p=? AND apellido_m=? AND nombre=?""",(var0,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,var11,var12,var13,var14,var15,var16,var17,var18,var19,var20,var21,var22,var23,var24,var25,var26,var27,var28,var29,var30,var32,var33,var34,var35,var36,var37,fecha,var1,var2,var3))
+    var31=dia_cb.get()
+    var32=mes_cb.get()
+    var33=ano_cb.get()
+    var34=var_sdg.get()
+    var35=var_usg.get()
+    var36=combo_seguro.get()
+    cursor.execute("""UPDATE paciente SET sexo=?, apellido_p=?, apellido_m=?, nombre=?, f_dia=?, f_mes=?, f_ano=?, edad=?, calle=?,colonia=?, numero=?, cp=?, telefono=?,alergias=?,enfermedades=?,hospitalizaciones=?,cirugias=?,traumatismos=?,transfusiones=?,etilismo=?,tabaquismo=?,toxicomanias=?,otros=?,menarca=?,ivsa=?,npsa=?,gestas=?,partos=?,cesareas=?,abortos=?,citologias=?,m_dia=?,m_mes=?,m_ano=?,sdg=?,sdu=?,seguros=?,fecha=? WHERE apellido_p=? AND apellido_m=? AND nombre=?""",(var0,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10,var11,var12,var13,var14,var15,var16,var17,var18,var19,var20,var21,var22,var23,var24,var25,var26,var27,var28,var29,var30,var31,var32,var33,var34,var35,var36,fecha,var1,var2,var3))
     conexion.commit()
     tk.messagebox.showinfo('Paciente','Paciente actualizado')
     conexion.close()
@@ -771,7 +789,7 @@ def evo():
     g_nombre = var_paterno.get() + " " + var_materno.get() +" "+ var_nombre.get()
     g_pp = var_alergias.get() + var_enfermedades.get() + var_hospitalizacion.get() + var_cirugias.get() + var_transfusiones.get() + var_traumatismos.get()
     g_np = var_etilismo.get() + var_tabaco.get() + var_toxicomania.get()
-    g_gyo = "Menarca: "+ var_menarca.get() + ", Inicio de vida sexual activa: " + var_ivsa.get() + ", numero de parejas sexualmente activas: "+ var_npsa.get() + ", gestas: "+ var_gesta.get() + ", partos: "+ var_parto.get() + ", cesarea: "+ var_cesarea.get() + ", aborto: "+ var_aborto.get() + ", citologias: "+ var_citologia.get() + ", fecha de ultima menstruacion: "+ var_menstruacion.get()
+    g_gyo = "Menarca: "+ var_menarca.get() + ", Inicio de vida sexual activa: " + var_ivsa.get() + ", numero de parejas sexualmente activas: "+ var_npsa.get() + ", gestas: "+ var_gesta.get() + ", partos: "+ var_parto.get() + ", cesarea: "+ var_cesarea.get() + ", aborto: "+ var_aborto.get() + ", citologias: "+ var_citologia.get() + ", fecha de ultima menstruacion: "+ dia_cb.get() + "/" + mes_cb.get() + "/" +var_menstruacion.get()
     g_ef = txt_neuro.get("1.0","end-1c") + piel.get("1.0","end-1c") + cabeza.get("1.0","end-1c") + cuello.get("1.0","end-1c") + torax.get("1.0","end-1c") + abdomen.get("1.0","end-1c") + genitales.get("1.0","end-1c") + extremidades.get("1.0","end-1c")
     g_actual = actual.get("1.0","end-1c")
     g_diagnostico = var_diagnostico.get()
@@ -794,7 +812,7 @@ def gen_historia():
     g_direccion = var_calle.get() + ", colonia: "+var_colonia.get() +", numero: " + var_numero.get() +", codigo postal: " + var_postal.get()
     g_pp = var_alergias.get() + var_enfermedades.get() + var_hospitalizacion.get() + var_cirugias.get() + var_transfusiones.get() + var_traumatismos.get()
     g_np = var_etilismo.get() + var_tabaco.get() + var_toxicomania.get()
-    g_gyo = "Menarca: "+ var_menarca.get() + ", Inicio de vida sexual activa: " + var_ivsa.get() + ", numero de parejas sexualmente activas: "+ var_npsa.get() + ", gestas: "+ var_gesta.get() + ", partos: "+ var_parto.get() + ", cesarea: "+ var_cesarea.get() + ", aborto: "+ var_aborto.get() + ", citologias: "+ var_citologia.get() + ", fecha de ultima menstruacion: "+ var_menstruacion.get()
+    g_gyo = "Menarca: "+ var_menarca.get() + ", Inicio de vida sexual activa: " + var_ivsa.get() + ", numero de parejas sexualmente activas: "+ var_npsa.get() + ", gestas: "+ var_gesta.get() + ", partos: "+ var_parto.get() + ", cesarea: "+ var_cesarea.get() + ", aborto: "+ var_aborto.get() + ", citologias: "+ var_citologia.get() + ", fecha de ultima menstruacion: "+ dia_cb.get() + "/" + mes_cb.get() + "/" +var_menstruacion.get()
     g_ef = txt_neuro.get("1.0","end-1c") + piel.get("1.0","end-1c") + cabeza.get("1.0","end-1c") + cuello.get("1.0","end-1c") + torax.get("1.0","end-1c") + abdomen.get("1.0","end-1c") + genitales.get("1.0","end-1c") + extremidades.get("1.0","end-1c")
     g_actual = actual.get("1.0","end-1c")
     g_diagnostico = var_diagnostico.get()
@@ -836,7 +854,7 @@ def nota_texto():
         g_check = check_embarazo.get()
         g_pp = var_alergias.get() + var_enfermedades.get() + var_hospitalizacion.get() + var_cirugias.get() + var_transfusiones.get() + var_traumatismos.get()
         g_np = var_etilismo.get() + var_tabaco.get() + var_toxicomania.get()
-        g_gyo = "Menarca: "+ var_menarca.get() + ", Inicio de vida sexual activa: " + var_ivsa.get() + ", numero de parejas sexualmente activas: "+ var_npsa.get() + ", Gestas: "+ var_gesta.get() + ", partos: "+ var_parto.get() + ", cesarea: "+ var_cesarea.get() + ", aborto: "+ var_aborto.get() + ", citologias: "+ var_citologia.get() + ", fecha de ultima menstruacion: "+ var_menstruacion.get()
+        g_gyo = "Menarca: "+ var_menarca.get() + ", Inicio de vida sexual activa: " + var_ivsa.get() + ", numero de parejas sexualmente activas: "+ var_npsa.get() + ", Gestas: "+ var_gesta.get() + ", partos: "+ var_parto.get() + ", cesarea: "+ var_cesarea.get() + ", aborto: "+ var_aborto.get() + ", citologias: "+ var_citologia.get() + ", fecha de ultima menstruacion: "+dia_cb.get() + "/" + mes_cb.get() + "/" +var_menstruacion.get()
         g_ef = var_neuro.get() + var_piel.get() + var_cabeza.get() + var_cuello.get() + var_torax.get() + var_abdomen.get() + var_genitales.get() + var_extremidades.get()
         g_actual = actual.get("1.0","end-1c")
         g_signos = "Tensión arterial: " + var_tension.get() + "Frecuencia cardiaca: " + var_fr.get() + ",Frecuencia respiratoria: " + var_fr.get() + ",Temperatura: " + var_temp.get() + ",Saturacion: " + var_sat.get()
@@ -927,14 +945,14 @@ def nota_texto():
             cursor.execute("""INSERT INTO consulta (fecha,peso,ta,fc,fr,temp,s02,pa,ef,analisis,manejo,diagnostico,foreign_p) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)""",(fecha,peso,tension,frecuencaf,frecuenciar,temp,saturacion,pad,exploracion,txt_analisis.get("1.0","end-1c"),manejo.get("1.0","end-1c"),ident,lista_id[0]))
             conexion.commit()
             conexion.close()
-        
+        status.config(foreground='green')
     except FileNotFoundError:
         f = open("notas/"+g_nombre+".txt","x")
         #GENERA LA NOTA EN UN ARCHIVO DE TEXTO
         g_check = check_embarazo.get()
         g_pp = var_alergias.get() + var_enfermedades.get() + var_hospitalizacion.get() + var_cirugias.get() + var_transfusiones.get() + var_traumatismos.get()
         g_np = var_etilismo.get() + var_tabaco.get() + var_toxicomania.get()
-        g_gyo = "Menarca: "+ var_menarca.get() + ", Inicio de vida sexual activa: " + var_ivsa.get() + ", numero de parejas sexualmente activas: "+ var_npsa.get() + ", Gestas: "+ var_gesta.get() + ", partos: "+ var_parto.get() + ", cesarea: "+ var_cesarea.get() + ", aborto: "+ var_aborto.get() + ", citologias: "+ var_citologia.get() + ", fecha de ultima menstruacion: "+ var_menstruacion.get()
+        g_gyo = "Menarca: "+ var_menarca.get() + ", Inicio de vida sexual activa: " + var_ivsa.get() + ", numero de parejas sexualmente activas: "+ var_npsa.get() + ", Gestas: "+ var_gesta.get() + ", partos: "+ var_parto.get() + ", cesarea: "+ var_cesarea.get() + ", aborto: "+ var_aborto.get() + ", citologias: "+ var_citologia.get() + ", fecha de ultima menstruacion: "+ dia_cb.get() + "/" + mes_cb.get() + "/" +var_menstruacion.get()
         g_ef = var_neuro.get() + var_piel.get() + var_cabeza.get() + var_cuello.get() + var_torax.get() + var_abdomen.get() + var_genitales.get() + var_extremidades.get()
         g_actual = actual.get("1.0","end-1c")
         g_signos = "Tensión arterial: " + var_tension.get() + "Frecuencia cardiaca: " + var_fr.get() + ",Frecuencia respiratoria: " + var_fr.get() + ",Temperatura: " + var_temp.get() + ",Saturacion: " + var_sat.get()
@@ -1025,6 +1043,7 @@ def nota_texto():
             cursor.execute("""INSERT INTO consulta (fecha,peso,ta,fc,fr,temp,s02,pa,ef,analisis,manejo,diagnostico,foreign_p) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)""",(fecha,peso,tension,frecuencaf,frecuenciar,temp,saturacion,pad,exploracion,txt_analisis.get("1.0","end-1c"),manejo.get("1.0","end-1c"),ident,lista_id[0]))
             conexion.commit()
             conexion.close()
+        status.config(foreground='green')
         
         
         
@@ -1078,6 +1097,7 @@ def seleccionar():
     conexion.commit()
     val=cursor.fetchone()
     txt_analisis.insert("end", val[0])
+    diagnostico.insert("end",var1)
     conexion.close()
 
 def seleccionar_u():
@@ -1201,6 +1221,7 @@ def n_limpiar():
     abdomen.delete("1.0", "end-1c")   
     genitales.delete("1.0", "end-1c")
     extremidades.delete("1.0", "end-1c")
+    diagnostico.delete('0','end')
     '''
     hemo.delete("0","end")
     hemato.delete("0","end")
@@ -1242,6 +1263,9 @@ def n_limpiar():
     hglu.delete("0","end")
     otros.delete("0","end")
     '''
+    sexo_eleccion.set('')
+    combo_seguro.set('')
+    status.config(foreground='red')
 def pres_a(event):
     conexion = sqlite3.connect('notas.db')
     cursor = conexion.cursor()
@@ -1318,7 +1342,7 @@ def receta():
     medicamento = combomed.get()
     dias=var_media.get()
     if check == 1:
-        resultado = round((peso * dosis * ml) / mg, 1)
+        resultado = Decimal((peso * dosis * ml) / mg)
         print('corrio')
         print(resultado)
         manejo.insert('end', medicamento + ' '+str(var_medmg.get())+' mg/' + str(var_medml.get())+ ' ml '+ 'tomar  '+ str(resultado)+ ' ml cada '+horas+ ' por ' + str(dias)+' días. ')
@@ -1342,8 +1366,57 @@ def receta():
             manejo.insert('end', medicamento + ' '+str(var_medmg.get())+' mg /' + str(var_medml.get())+ ' ml '+' tomar  '+str(a)+ ' ml cada '+horas+ ' por ' + str(dias)+' días. ')
             print(a)
 
+def gen_receta():
+    var_medico = combo_medico.get()
+    print(var_medico)
+    conexion = sqlite3.connect('notas.db')
+    cursor = conexion.cursor()
+    cursor.execute("SELECT * FROM medico WHERE nombre=? ",(var_medico,))
+    var_receta=cursor.fetchone()
+    print(var_receta)
+    pdf = FPDF()
+    paciente_nombre=var_paterno.get() +" "+ var_materno.get() +" "+ var_nombre.get()
+    var_nacimiento= var_dianacimiento.get()+"/"+var_mes.get()+"/"+var_ano.get()
+    cedula = var_receta[2]
+    cedula_esp = var_receta[3]
+    fecha = datetime.datetime.now()
+    medico = var_receta[1]
+    #folio = 0
+    pdf.add_page()
+
+    pdf.set_font("Arial", size=10)
+    pdf.set_xy(10,20)
+    pdf.multi_cell(200,5,txt = "Dr."+medico+ "\nMedico Familiar\nXochicalco/UABC\n" +str(cedula)+"/"+str(cedula_esp),align = 'L')
+    pdf.image('Picture1.png', x=135,y=0, w=31, h=20)
+    pdf.set_xy(50,20)
+    pdf.multi_cell(200,5,txt = "Av. Reforma #1000 y calle B, Telefono(686)552-2300\ncolonia Primera seccion, Mexicali, Baja California, C.p. 2110", align = 'C')
+
+    pdf.set_xy(10,50)
+    pdf.cell(100,10,txt="Nombre: "+paciente_nombre,align="L")
+
+    pdf.set_xy(90,50)
+    pdf.cell(100,10,txt="Edad: " +edad.get(),align="L",)
+    pdf.set_xy(110,50)
+    pdf.cell(110,10,txt="f.Nacimiento: " + var_nacimiento,align="L")
+    pdf.set_xy(165,50)
+    pdf.cell(110,10,txt="Fecha: "+fecha.strftime("%x"),align="L")
+
+    pdf.image('Picture2.png', x=135,y=50)
+    pdf.set_xy(10,80)
+    pdf.multi_cell(0,5,txt = manejo.get("1.0","end-1c"), align = 'J', border=1)
+
+    pdf.set_xy(10,250)
+    pdf.multi_cell(200,5,txt = "FARMACIA\nHISPANO AMERICANO\nReforma #1007-A Colonia Primera Seccion\nTelefono 552-9487", align = 'L')
+
+    pdf.set_xy(60,250)
+    pdf.multi_cell(200,5,txt = "Dr."+medico+"\nMedico Familiar\nCed.Prof."+str(cedula)+"/"+str(cedula_esp), align = 'C')
+
+
+
+    pdf.output("prueba.pdf")
+
 def info():
-    tk.messagebox.showinfo('Acerca de','Version: 08.02.24A\n Autor: Med.Luna Medico Familiar.\n apuntesmf.com \n Contacto: drlunamf@hotmail.com')
+    tk.messagebox.showinfo('Acerca de','Version: 20.02.24A\n Autor: Med.Luna Medico Familiar.\n apuntesmf.com \n Contacto: drlunamf@hotmail.com')
     
 
 # ++++++++++++++++++++++++++++++++++++++
@@ -1423,6 +1496,13 @@ sexo_eleccion.grid(column=1, row=0)
 sexo_eleccion.current(0)
 button_s=ttk.Button(frame_datospers, text="buscar",command=buscar_paciente )
 button_s.grid(column=2, row=0, padx=2)
+ttk.Label(frame_datospers, text="Medico:").grid(column=3, row=0)
+combo_medico = ttk.Combobox(
+        frame_datospers,
+        state="readonly",
+        values= md,
+    )
+combo_medico.grid(column=4,row=0)
 
 
 #etiquetas
@@ -1871,6 +1951,10 @@ lista_fecha = tk.Listbox(
     )
 lista_fecha.grid(column=2, row=0, padx=2, pady=4)
 lista_fecha.bind('<<ListboxSelect>>', cargar_nota)
+
+status=ttk.Label(frame_nota,text='Guardado', foreground='red')
+status.grid(column=1, row=1, padx=2, pady=4)
+
 frame_opciones = ttk.LabelFrame(tab5, text="Opciones")#Genera el frame para los botones de opciones para generar notas o almacenar en base de datos y formato de texto
 frame_opciones.grid(column=0, row=1, padx=2)
 
@@ -1885,6 +1969,12 @@ guardar.grid(column=1, row=1, padx=2)
 
 nuevo = ttk.Button(frame_opciones, text="Limpiar", command=n_limpiar)
 nuevo.grid(column=0, row=1, padx=2)
+
+boton_receta = ttk.Button(frame_opciones, text="imprir receta", command=gen_receta)
+boton_receta.grid(column=6, row=1, padx=2)
+
+boton_suma= ttk.Button(frame_opciones, text="imprir receta", command=lambda:calculo.suma(var_kg.get(),5))
+boton_suma.grid(column=6, row=2, padx=2)
 
 add_med = ttk.Button(frame_med, text="Agregar medicamento", command=receta)
 add_med.grid(column=0, row=6, padx=2)
