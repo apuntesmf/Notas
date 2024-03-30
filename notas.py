@@ -47,12 +47,14 @@ md=[]
 cursor.execute("SELECT nombre FROM Medico ")
 for h in cursor:
     md.append(h[0])
+lista_consulta = md
 
 
 cursor.execute("SELECT enfermedad FROM urgencias ")
 ux=[]
 for y in cursor:
     ux.append(y)
+lista_urgencias=ux
 
 lista_completa=dc+ux
 
@@ -125,9 +127,11 @@ def f_enfermedad(txt_neuro2, piel2, cabeza2, cuello2, torax2,abdomen2,genitales2
         var8=extremidades2
         var9=analisis2
         var10=manejo2
-        cursor.execute("""INSERT INTO enfermedades (enfermedad,neurologico,piel,cabeza,cuello,torax,abdomen,genitales,extremidades,analisis,manejo) VALUES(?,?,?,?,?,?,?,?,?,?,?)""",(vardx,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10))
+        cursor.execute("""INSERT INTO enfermedades (enfermedad,neurologico,piel,cabeza,cuello,torax,abdomen,genitales,extremidades,analisis,manejo) VALUES(?,?,?,?,?,?,?,?,?,?,?)""",[vardx,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10])
         conexion.commit()
         conexion.close()
+        tk.messagebox.showinfo('Enfermedad','Enfermedad Agregada')
+
     else:
         vardx=var_diagnostico2
         var1=txt_neuro2
@@ -140,9 +144,10 @@ def f_enfermedad(txt_neuro2, piel2, cabeza2, cuello2, torax2,abdomen2,genitales2
         var8=extremidades2
         var9=analisis2
         var10=manejo2
-        cursor.execute("""INSERT INTO urgencias (enfermedad,neurologico,piel,cabeza,cuello,torax,abdomen,genitales,extremidades,analisis,manejo) VALUES(?,?,?,?,?,?,?,?,?,?,?)""",(vardx,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10))
+        cursor.execute("""INSERT INTO urgencias (enfermedad,neurologico,piel,cabeza,cuello,torax,abdomen,genitales,extremidades,analisis,manejo) VALUES(?,?,?,?,?,?,?,?,?,?,?)""",[vardx,var1,var2,var3,var4,var5,var6,var7,var8,var9,var10])
         conexion.commit()
         conexion.close()
+        tk.messagebox.showinfo('Enfermedad','Enfermedad Agregada')
 def n_enfermedad():
     topenfermedad = tk.Toplevel(ven)
     topenfermedad.title("Agregar enfermedad")
@@ -209,14 +214,13 @@ def n_enfermedad():
             value=2,
             variable=consulta
         )
-    r2.grid(column=2,row=11, padx=5,pady=5)
+    r2.grid(column=3,row=10, padx=5,pady=5)
     combo2 = ttk.Combobox(
         topenfermedad,
         state="readonly",
         values= lista_completa
     )
     
-    cargar_enfermedad = combo2.get()
     def c_enfermedad():
         seleccion=combo2.get()
         conexion = sqlite3.connect('notas.db')
@@ -262,20 +266,63 @@ def n_enfermedad():
         val=cursor.fetchone()
         analisis2.insert("end", val[0])
         conexion.close()
+    def eliminar_enfermedad():
+        global lista_consulta
+        global lista_urgencias
+        seleccion=combo2.get()
+        
+      
+        lista_enfermedad = []
+        conexion = sqlite3.connect('notas.db')
+        cursor = conexion.cursor()
+        cursor.execute("""SELECT rowid FROM enfermedades WHERE enfermedad=?""",(seleccion,))
+        data=cursor.fetchone()
+        if data is None:
+            conexion = sqlite3.connect('notas.db')
+            cursor = conexion.cursor()
+            seleccion=str(combo2.get())
+            cursor.execute("""DELETE FROM urgencias WHERE enfermedad = ?""", [seleccion,])
+            conexion.commit()
+            conexion.close
+            tk.messagebox.showinfo('Enfermedad','Enfermedad Eliminada')
+            l_consultaux=[]
+            for lm in cursor:
+                l_consultaux.append(lm)
 
+            lista_urgencias = l_consultaux
+            combo2['values'] =l_consultaux
+            conexion.close
+        else:
+            cursor.execute("""SELECT * FROM enfermedades WHERE enfermedad=?""",(seleccion,))
+            prueba = cursor.fetchall()[0]
+            for x in prueba:
+                lista_enfermedad.append(x)
+            cursor.execute("""DELETE FROM enfermedades WHERE id = ?""", [lista_enfermedad[0],])
+            conexion.commit()
+            conexion.close
+            tk.messagebox.showinfo('Enfermedad','Enfermedad Eliminada')
+            conexion = sqlite3.connect('notas.db')
+            cursor = conexion.cursor()
+            cursor.execute("SELECT enfermedad FROM enfermedades ")
+            l_consulta=[]
+            for lm in cursor:
+                l_consulta.append(lm)
 
-    combo2.grid(column=2,row=12)
+            lista_consulta = l_consulta
+            combo['values'] =l_consulta
+            conexion.close
+
+    combo2.grid(column=3,row=12)
     add_med = ttk.Button(topenfermedad, text="Agregar enfermedad", command=lambda:f_enfermedad(txt_neuro2.get("1.0","end-1c"), piel2.get("1.0","end-1c"), cabeza2.get("1.0","end-1c"), cuello2.get("1.0","end-1c"), torax2.get("1.0","end-1c"),abdomen2.get("1.0","end-1c"),genitales2.get("1.0","end-1c"),extremidades2.get("1.0","end-1c"),analisis2.get("1.0","end-1c"),manejo2.get("1.0","end-1c"),var_diagnostico2.get(),consulta.get()))
     add_med.grid(column=1, row=11, padx=2)
+    eliminar_enf = ttk.Button(topenfermedad, text="Eliminar", command=eliminar_enfermedad)
+    eliminar_enf.grid(column=1, row=12, padx=2)
     actualizar_med = ttk.Button(topenfermedad, text="actualizar enfermedad", command=lambda:a_enfermedad(txt_neuro2.get("1.0","end-1c"), piel2.get("1.0","end-1c"), cabeza2.get("1.0","end-1c"), cuello2.get("1.0","end-1c"), torax2.get("1.0","end-1c"),abdomen2.get("1.0","end-1c"),genitales2.get("1.0","end-1c"),extremidades2.get("1.0","end-1c"),analisis2.get("1.0","end-1c"),manejo2.get("1.0","end-1c"),combo2.get(),consulta.get()))
-    actualizar_med.grid(column=1, row=12, padx=2)
+    actualizar_med.grid(column=1, row=13, padx=2)
     cargar_med = ttk.Button(topenfermedad, text="cargar", command=c_enfermedad)
-    cargar_med.grid(column=1, row=13, padx=2)
-
-
+    cargar_med.grid(column=1, row=14, padx=2)
 
 def n_medicamento():
-    
     def cargar_med():
         var1=combo_lmedicamento.get()
         lista=[]
@@ -328,6 +375,7 @@ def n_medicamento():
         lista_medicamentos = l_medicamentos
         combomed['values'] =l_medicamentos
         conexion.close
+        tk.messagebox.showinfo('Medicamento','Medicamento Agregado')
 
 
 
@@ -357,17 +405,27 @@ def n_medicamento():
         combo_lmedicamento['values'] = l_medicamentos
         combomed['values'] = l_medicamentos
         conexion.close
-        
+        tk.messagebox.showinfo('Medicamento','Medicamento Actualizado')
     def eliminar_medicamento():
-        global lista_medicamentos
-        global combomed
+
+        e_medicamento = []
+        l_medicamentos=[]
+        var1=combo_lmedicamento.get()
+        print(var1)
+       
         conexion = sqlite3.connect('notas.db')
         cursor = conexion.cursor()
-        var1=pat.get()
-        cursor.execute("""DELETE FROM medicamentos WHERE sal = ?""", [var1])
+        cursor.execute("""SELECT * FROM medicamentos WHERE sal=?""",(var1,))
+        prueba = cursor.fetchall()[0]
+        print(prueba)
+        for x in prueba:
+            e_medicamento.append(x)
+
+        for lm in cursor:
+            e_medicamento.append(lm)
+        cursor.execute("""DELETE FROM medicamentos WHERE id =?""", [prueba[0]])
         conexion.commit()
         conexion.close
-        l_medicamentos=[]
         conexion = sqlite3.connect('notas.db')
         cursor = conexion.cursor()
         cursor.execute("SELECT sal FROM medicamentos ")
@@ -378,11 +436,9 @@ def n_medicamento():
         combo_lmedicamento['values'] = l_medicamentos
         combomed['values'] = l_medicamentos
         conexion.close
-
+        tk.messagebox.showinfo('Medicamento','Medicamento Eliminado')
         
 
-        
-    
     topmed = tk.Toplevel(ven)
     topmed.title("Agregar medicamento")
 
